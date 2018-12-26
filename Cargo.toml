@@ -1,0 +1,20 @@
+[package]
+name = "rtest"
+version = "0.0.1"
+authors = [ "jTitor <me@me.me>" ]
+
+[dependencies]
+#Simpler and easier-to-convert errors
+failure = "*"#"0.1.1"
+
+log = "*"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+#This is needed for testing on macOS,
+#as the native GUI tests will freak out
+#if window generation isn't run on the main thread.
+dispatch = "*"
+
+# [[bin]]
+# name = "leek2"
+# doc = false
