@@ -23,3 +23,8 @@
 	* ???
 * ```test_run``` works
 	* ???
+
+# Scenarios That Need Manual Testing
+* Macro-time errors
+  * When a test is marked as both ```#[test]``` and ```#[test(main)]```, it must report an error.
+  But since this is a macro-time error it'd cause compilation to fail.
