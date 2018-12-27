@@ -5,7 +5,6 @@
 //that the section needs expanding
 #![allow(unreachable_code)]
 
-#[macro_use]
 extern crate failure;
 
 //Define our base level modules.
