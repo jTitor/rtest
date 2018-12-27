@@ -1,4 +1,4 @@
-/**
+/*!
  * Defines the TestLists struct.
  */
 

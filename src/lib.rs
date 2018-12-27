@@ -1,4 +1,6 @@
-//Crate root for the library.
+/*!
+ * Crate root for the library.
+ */
 
 //Anything marked "unreachable!()"
 //is intentional; it's supposed to indicate
