@@ -19,6 +19,10 @@ dispatch = "*"
 # name = "rtest"
 # doc = false
 
+[lib]
+#Enable custom macro definition
+proc-macro = true
+
 [[test]]
 #Path to the root file for the unit tests.
 #As with [[bin]]/[[lib]] assuming CWD prefix is "./src",
