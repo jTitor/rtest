@@ -15,6 +15,8 @@ mod discovery;
 mod frontend;
 mod test_run;
 
+
+
 //Define custom attributes; whoever decided these have to be in the crate root were total assholes
 use proc_macro::TokenStream;
 
@@ -23,15 +25,7 @@ use proc_macro::TokenStream;
  */
 #[proc_macro_attribute]
 pub fn test(attr: TokenStream, item: TokenStream) -> TokenStream {
-	//Is item a function?
-	//If so:
-	//	Does attr contain "main"?
-	//	If so:
-	//		Add item to the main test list.
-	//	Else:
-	//		Add item to the parallel test list.
-	//Else:
-	//	Warn that the item isn't a function and that this tag has no effect.
+	discovery::do_attribute_test(&attr, &item);
 
 	//Return the input elements as-is.
 	item
@@ -42,13 +36,8 @@ pub fn test(attr: TokenStream, item: TokenStream) -> TokenStream {
  * It is considered an error to test a function marked as #[ignore].
  */
 #[proc_macro_attribute]
-pub fn ignore(_attr: TokenStream, item: TokenStream) -> TokenStream {
-	//Is item a function?
-	//If so:
-	//	Remove item from the parallel/main test lists if it is within either list.
-	//	Add item to the ignore list.
-	//Else:
-	//	Warn that the item isn't a function and that this tag has no effect.
+pub fn ignore(attr: TokenStream, item: TokenStream) -> TokenStream {
+	discovery::do_attribute_ignore(&attr, &item);
 
 	//Return the input elements as-is.
 	item
