@@ -1,0 +1,20 @@
+[package]
+name = "rtest_impl"
+version = "0.1.0"
+authors = ["jTitor <me@me.me>"]
+edition = "2018"
+
+[dependencies]
+#Simpler and easier-to-convert errors
+failure = "*"#"0.1.1"
+log = "*"
+rayon = "*"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+#This is needed for testing on macOS,
+#as the native GUI tests will freak out
+#if window generation isn't run on the main thread.
+dispatch = "*"
+
+[lib]
+name = "rtest_impl"

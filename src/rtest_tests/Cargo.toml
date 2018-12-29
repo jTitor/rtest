@@ -1,0 +1,9 @@
+[package]
+name = "rtest_tests"
+version = "0.1.0"
+authors = ["jTitor <me@me.me>"]
+edition = "2018"
+workspace = "../../"
+
+[dependencies]
+rtest_impl = { path = "../rtest_impl", version = "*" }

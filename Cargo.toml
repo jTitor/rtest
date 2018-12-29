@@ -1,27 +1,21 @@
-[package]
-name = "rtest"
-version = "0.0.1"
-authors = [ "jTitor <me@me.me>" ]
+[workspace]
 
-[dependencies]
-#Simpler and easier-to-convert errors
-failure = "*"#"0.1.1"
-log = "*"
-rayon = "*"
+members = [
+	"src/rtest_impl",
+	"src/rtest_macros",
+	"src/rtest_tests",
+]
+# [package]
+# name = "rtest"
+# version = "0.0.1"
+# authors = [ "jTitor <me@me.me>" ]
 
-[target.'cfg(target_os = "macos")'.dependencies]
-#This is needed for testing on macOS,
-#as the native GUI tests will freak out
-#if window generation isn't run on the main thread.
-dispatch = "*"
+# [dependencies]
+# rtest_impl = "*"
 
 # [[bin]]
 # name = "rtest"
 # doc = false
-
-[lib]
-#Enable custom macro definition
-proc-macro = true
 
 # [[test]]
 #Path to the root file for the unit tests.
