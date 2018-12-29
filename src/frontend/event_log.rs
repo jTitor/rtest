@@ -26,7 +26,7 @@ impl EventLog {
 	 * TODO
 	 */
 	pub fn subscribe(&mut self, subscribing_view: Rc<TerminalView>) {
-		unimplemented!()
+		self._views.push(subscribing_view.clone());
 	}
 
 	/**

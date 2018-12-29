@@ -14,10 +14,11 @@ impl TerminalView {
 	 * Returns a new TerminalView instance.
 	 */
 	pub fn new() -> TerminalView {
-		unimplemented!();
+		TerminalView {}
 	}
 
 	pub fn log(&self, text: String) {
+		println!("{}", text);
 		unimplemented!();
 	}
 }
