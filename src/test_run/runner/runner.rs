@@ -1,6 +1,7 @@
 /*!
  * Defines the TestRunner struct.
 */
+use std::any;
 use std::cmp;
 use std::panic;
 use std::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
@@ -8,8 +9,8 @@ use std::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 use failure::Error;
 use rayon::prelude::*;
 
+use super::{GetLockError, TestRunnerError, TestError};
 use super::super::FailureDetail;
-use super::{GetLockError, TestRunnerError};
 use discovery::{StaticTestList, StaticTestListInstance, TestLists};
 use frontend::{StaticFrontend, StaticFrontendInstance};
 
@@ -24,17 +25,21 @@ pub struct TestRunner {
 	_tests_evaluated_count: u64,
 }
 
+/**
+ * TODO
+ */
 fn get_write_lock<'a, T>(lock: &'a RwLock<T>) -> Result<RwLockWriteGuard<'a, T>, Error> {
-	unsafe {
-		let write_lock_result = lock.write();
+	let write_lock_result = lock.write();
 
-		match write_lock_result {
-			Ok(write_lock) => { Ok(write_lock) },
-			Err(_) => { Err(GetLockError::LockPoisoned.into()) }
-		}
+	match write_lock_result {
+		Ok(write_lock) => Ok(write_lock),
+		Err(_) => Err(GetLockError::LockPoisoned.into()),
 	}
 }
 
+/**
+ * TODO
+ */
 fn parallel_job(
 	fail_count_lock: RwLock<&mut u64>,
 	pass_count_lock: RwLock<&mut u64>,
@@ -45,32 +50,53 @@ fn parallel_job(
 	unsafe {
 		StaticFrontend::instance()?.log(format!("Starting test: {:?}", test));
 	}
-	//		Run the test.
-	panic::catch_unwind(test);
-	unimplemented!();
+	//Run the test.
+	let mut test_result = Err(TestError::TestNotRun);
+
+	let initial_test_result = panic::catch_unwind(test);
+	match initial_test_result {
+		Ok(_) => { test_result = Ok(()); },
+		Err(x) => {
+			if let Some(fail_string) = x.downcast_ref::<String>() {
+				test_result = Err(TestError::TestFailed {
+				cause: format!("{}", fail_string) });
+			}
+			else if let Some(fail_string) = x.downcast_ref::<&str>() {
+				test_result = Err(TestError::TestFailed {
+				cause: format!("{}", fail_string) });
+			}
+			else {
+				test_result = Err(TestError::TestFailed {
+				cause: format!("Couldn't get detailed failure string: {:?}", x) });
+			}
+		}
+	}
 
 	//	Increment run counter accordingly.
 	**get_write_lock(&tests_evaluated_count_lock)? += 1;
 
 	//Handle pass/fail...
-	let test_passed = false;
-	let test_failed = false;
 	let mut frontend_option: Option<StaticFrontendInstance> = None;
 	unsafe {
 		frontend_option = Some(StaticFrontend::instance()?);
 	}
 	if let Some(frontend) = frontend_option {
-		if test_failed {
-			//increment failure counter accordingly.
-			**get_write_lock(&fail_count_lock)? += 1;
-			//Report to frontend.
-			frontend.log(format!("Test failed: {:?}", test));
-		}
-		if test_passed {
-			//	Increment pass counter (?) accordingly.
-			**get_write_lock(&pass_count_lock)? += 1;
-			//Report to frontend.
-			frontend.log(format!("Test passed: {:?}", test));
+		match test_result {
+			Ok(_) => {
+				//	Increment pass counter (?) accordingly.
+				**get_write_lock(&pass_count_lock)? += 1;
+				//Report to frontend.
+				frontend.log(format!("Test passed: {:?}", test));
+			},
+			Err(x) => {
+				//increment failure counter accordingly.
+				**get_write_lock(&fail_count_lock)? += 1;
+				//Report to frontend.
+				frontend.log(format!("Test {:?} failed: {}", test, x));
+				//Add the failure reason to the overall list.
+				x;
+				unimplemented!();
+			}
 		}
 	}
 
@@ -78,6 +104,9 @@ fn parallel_job(
 }
 
 impl TestRunner {
+	/**
+	 * TODO
+	 */
 	fn handle_ignored_tests(&mut self, test_list: &StaticTestListInstance) -> Result<(), Error> {
 		//For each test in ignored_tests:
 		for test in test_list.ignored_tests() {
@@ -90,6 +119,9 @@ impl TestRunner {
 		Ok(())
 	}
 
+	/**
+	 * TODO
+	 */
 	fn run_parallel_tests(&mut self, test_list: &StaticTestListInstance) -> Result<(), Error> {
 		//Iterate over parallel_tests:
 		//going to do N jobs,
@@ -124,7 +156,7 @@ impl TestRunner {
 				//	Get next N tests
 				let test_index = base_index + y;
 				unimplemented!();
-				
+
 				//	Create a job for each test:
 				let job = |test: fn()| {
 					//Actually run the test.
@@ -158,9 +190,12 @@ impl TestRunner {
 		Ok(())
 	}
 
+	/**
+	 * TODO
+	 */
 	fn run_main_tests(&mut self, test_list: &StaticTestListInstance) -> Result<(), Error> {
 		//For each test in main_tests:
-		for test in test_list.main_tests() {
+		for test in test_list.main_tests().iter() {
 			//	Report that the test is starting to frontend.
 			let mut frontend_option: Option<StaticFrontendInstance> = None;
 			unsafe {
@@ -198,7 +233,10 @@ impl TestRunner {
 		Ok(())
 	}
 
-	pub fn run(&mut self) -> Result<(), Error> {
+	/**
+	 * TODO
+	 */
+	fn do_run(&mut self) -> Result<(), Error> {
 		//Clear all fields.
 		self._failures.clear();
 		self._pass_count = 0;
@@ -230,5 +268,12 @@ impl TestRunner {
 		}
 
 		Ok(())
+	}
+
+	/**
+	 * TODO
+	 */
+	pub fn run(&mut self) {
+		let _ = self.do_run();
 	}
 }

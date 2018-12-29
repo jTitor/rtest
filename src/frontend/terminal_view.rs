@@ -15,5 +15,9 @@ impl TerminalView {
 	 */
 	pub fn new() -> TerminalView {
 		unimplemented!();
-	}	
+	}
+
+	pub fn log(&self, text: String) {
+		unimplemented!();
+	}
 }

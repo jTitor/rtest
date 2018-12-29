@@ -22,3 +22,11 @@ pub enum GetLockError {
 	#[fail(display = "A lock was poisoned")]
 	LockPoisoned,
 }
+
+#[derive(Debug, Fail)]
+pub enum TestError {
+	#[fail(display = "Test failed: {}", cause)]
+	TestFailed { cause: String },
+	#[fail(display = "Test not run")]
+	TestNotRun,
+}

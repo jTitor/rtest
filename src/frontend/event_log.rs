@@ -35,6 +35,8 @@ impl EventLog {
 	pub fn log(&self, event: String) {
 		//For each subscriber in _views:
 		//	Call the subscriber's display function.
-		unimplemented!()
+		for view in self._views.iter() {
+			view.log(event.clone());
+		}
 	}
 }
