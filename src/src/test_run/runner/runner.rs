@@ -1,18 +1,17 @@
 /*!
  * Defines the TestRunner struct.
 */
-use std::any;
 use std::cmp;
 use std::panic;
-use std::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
+use std::sync::{RwLock, RwLockWriteGuard};
 
 use failure::Error;
 use rayon::prelude::*;
 
 use super::{GetLockError, TestRunnerError, TestError};
 use super::super::FailureDetail;
-use discovery::{StaticTestList, StaticTestListInstance, TestLists};
-use frontend::{StaticFrontend, StaticFrontendInstance};
+use ::src::discovery::{StaticTestList, StaticTestListInstance};
+use ::src::frontend::{StaticFrontend, StaticFrontendInstance};
 
 /**
  * Given a TestLists instance, runs the different tests as needed.

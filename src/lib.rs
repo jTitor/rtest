@@ -12,9 +12,11 @@ extern crate failure;
 extern crate rayon;
 
 //Define our base level modules.
-mod discovery;
-mod frontend;
-mod test_run;
+mod src;
+use self::src::test_run::TestRunner;
+
+mod tests;
+use self::tests::run_unit_tests;
 
 //Define custom attributes; whoever decided these have to be in the crate root were total assholes
 use proc_macro::TokenStream;
@@ -24,7 +26,7 @@ use proc_macro::TokenStream;
  */
 #[proc_macro_attribute]
 pub fn test(attr: TokenStream, item: TokenStream) -> TokenStream {
-	discovery::do_attribute_test(&attr, &item);
+	src::discovery::do_attribute_test(&attr, &item);
 
 	//Return the input elements as-is.
 	item
@@ -36,7 +38,7 @@ pub fn test(attr: TokenStream, item: TokenStream) -> TokenStream {
  */
 #[proc_macro_attribute]
 pub fn ignore(attr: TokenStream, item: TokenStream) -> TokenStream {
-	discovery::do_attribute_ignore(&attr, &item);
+	src::discovery::do_attribute_ignore(&attr, &item);
 
 	//Return the input elements as-is.
 	item
