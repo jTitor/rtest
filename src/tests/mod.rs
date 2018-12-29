@@ -1,11 +1,13 @@
 /*!
  * Defines the unit tests module.
 */
+#[macro_use]
+mod unit_test;
+
 mod discovery;
 mod frontend;
 mod test_run;
 
-mod unit_test;
 use self::unit_test::UnitTest;
 
 /**
