@@ -12,7 +12,9 @@ extern crate rtest_impl;
 
 //Define our base level modules.
 
-//Define custom attributes; whoever decided these have to be in the crate root were total assholes
+//Define custom attributes; whoever decided these have to be
+//in the crate root were - actually they're not so bad now
+//that these are in a separate crate
 use proc_macro::TokenStream;
 
 /**
