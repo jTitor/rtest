@@ -54,7 +54,7 @@ pub fn run_unit_tests() -> Result<(), ()> {
 				//If it failed, increment fail count.
 				fail_count += 1;
 				//Report test failed?
-				println!("Test {} failed: {}", test.name(), fail_reason);
+				println!("Test {} FAILED: {}", test.name(), fail_reason);
 			}
 		}
 	}
@@ -69,6 +69,9 @@ pub fn run_unit_tests() -> Result<(), ()> {
 
 	//If any tests failed, it's an error; else it's ok.
 	if fail_count > 0 {
+		//Print failure reasons again?
+		unimplemented!();
+
 		return Err(());
 	}
 
