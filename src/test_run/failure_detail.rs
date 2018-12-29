@@ -5,6 +5,7 @@
 /**
  * Provides information as to how a given test failed.
  */
+#[derive(Debug, Default, Clone)]
 pub struct FailureDetail {
 	test_name: String,
 	failure_file: String,

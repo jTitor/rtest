@@ -10,5 +10,10 @@ pub struct TerminalView {
 }
 
 impl TerminalView {
-	
+	/**
+	 * Returns a new TerminalView instance.
+	 */
+	pub fn new() -> TerminalView {
+		unimplemented!();
+	}	
 }

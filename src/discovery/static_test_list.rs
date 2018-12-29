@@ -8,7 +8,10 @@ use super::TestLists;
 use failure::{Error, Fail};
 
 //TODO
-static mut test_lists: Option<Mutex<TestLists>> = None;
+static mut TEST_LISTS: Option<Mutex<TestLists>> = None;
+
+pub type StaticTestListInstance = MutexGuard<'static, TestLists>;
+pub type StaticTestListInstanceResult = Result<StaticTestListInstance, Error>;
 
 /**
  * TODO
@@ -27,16 +30,16 @@ pub enum StaticTestListError {
 pub struct StaticTestList {}
 
 impl StaticTestList {
-	pub unsafe fn instance() -> Result<MutexGuard<'static, TestLists>, Error> {
-		if let None = test_lists {
-			test_lists = Some(Mutex::new(TestLists::new()));
+	pub unsafe fn instance() -> StaticTestListInstanceResult {
+		if let None = TEST_LISTS {
+			TEST_LISTS = Some(Mutex::new(TestLists::new()));
 		}
 		
-		match test_lists {
+		match TEST_LISTS {
 			Some(ref lists) => {
 				match lists.lock() {
 					Ok(lists_read_lock) => { Ok(lists_read_lock) },
-					Err(x) => { Err(StaticTestListError::LockPoisoned.into()) }
+					Err(_) => { Err(StaticTestListError::LockPoisoned.into()) }
 				}
 			}
 			_ => { Err(StaticTestListError::InstanceNotInitialized.into()) },

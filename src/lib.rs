@@ -9,13 +9,12 @@
 
 extern crate proc_macro;
 extern crate failure;
+extern crate rayon;
 
 //Define our base level modules.
 mod discovery;
 mod frontend;
 mod test_run;
-
-
 
 //Define custom attributes; whoever decided these have to be in the crate root were total assholes
 use proc_macro::TokenStream;

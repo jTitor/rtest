@@ -8,4 +8,8 @@ mod event_log;
 use self::event_log::*;
 
 mod frontend;
-pub use self::frontend::*;
+use self::frontend::*;
+pub use self::frontend::Frontend;
+
+mod static_frontend;
+pub use self::static_frontend::*;
