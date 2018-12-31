@@ -150,7 +150,7 @@ impl PrivateImpl for TestRunner {
 			}
 
 			if let Some(frontend) = frontend_option {
-				frontend.log(format!("Test starting: {:?}", test));
+				frontend.log(&format!("Test starting: {:?}", test));
 				//	Run the test.
 				unimplemented!();
 				//	Save any test failure details to run_results.failures list.
@@ -165,13 +165,13 @@ impl PrivateImpl for TestRunner {
 					//increment failure counter accordingly.
 					run_results.fail_count += 1;
 					//Report to frontend.
-					frontend.log(format!("Test failed: {:?}", test));
+					frontend.log(&format!("Test failed: {:?}", test));
 				}
 				if test_passed {
 					//	Increment pass counter (?) accordingly.
 					run_results.pass_count += 1;
 					//Report to frontend.
-					frontend.log(format!("Test passed: {:?}", test));
+					frontend.log(&format!("Test passed: {:?}", test));
 				}
 			}
 		}

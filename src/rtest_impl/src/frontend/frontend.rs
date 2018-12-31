@@ -33,7 +33,7 @@ impl Frontend {
 	/**
 	 * TODO
 	 */
-	pub fn log(&self, event: String) {
+	pub fn log(&self, event: &str) {
 		self._event_log.log(event);
 	}
 }

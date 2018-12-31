@@ -32,7 +32,7 @@ pub fn parallel_job(
 ) -> Result<(), Error> {
 	//Report that the test is starting to frontend.
 	unsafe {
-		StaticFrontend::instance()?.log(format!("Starting test: {:?}", test));
+		StaticFrontend::instance()?.log(&format!("Starting test: {:?}", test));
 	}
 	//Run the test.
 	let mut test_result = Err(TestError::TestNotRun);
@@ -73,13 +73,13 @@ pub fn parallel_job(
 				//	Increment pass counter (?) accordingly.
 				**get_write_lock(&pass_count_lock)? += 1;
 				//Report to frontend.
-				frontend.log(format!("Test passed: {:?}", test));
+				frontend.log(&format!("Test passed: {:?}", test));
 			}
 			Err(x) => {
 				//increment failure counter accordingly.
 				**get_write_lock(&fail_count_lock)? += 1;
 				//Report to frontend.
-				frontend.log(format!("Test {:?} failed: {}", test, x));
+				frontend.log(&format!("Test {:?} failed: {}", test, x));
 				//Add the failure reason to the overall list.
 				x;
 				unimplemented!();

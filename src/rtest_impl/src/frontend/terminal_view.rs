@@ -17,7 +17,7 @@ impl TerminalView {
 		TerminalView {}
 	}
 
-	pub fn log(&self, text: String) {
+	pub fn log(&self, text: &str) {
 		println!("{}", text);
 		unimplemented!();
 	}

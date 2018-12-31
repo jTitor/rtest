@@ -32,11 +32,11 @@ impl EventLog {
 	/**
 	 * TODO
 	 */
-	pub fn log(&self, event: String) {
+	pub fn log(&self, event: &str) {
 		//For each subscriber in _views:
 		//	Call the subscriber's display function.
 		for view in self._views.iter() {
-			view.log(event.clone());
+			view.log(event);
 		}
 	}
 }
