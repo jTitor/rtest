@@ -21,6 +21,35 @@ pub fn get_write_lock<'a, T>(lock: &'a RwLock<T>) -> Result<RwLockWriteGuard<'a,
 	}
 }
 
+pub fn do_test(test: fn()) -> Result<(), TestError> {
+	let initial_test_result = panic::catch_unwind(test);
+	match initial_test_result {
+		Ok(_) => {
+			return Ok(());
+		}
+		Err(x) => {
+			if let Some(fail_string) = x.downcast_ref::<String>() {
+				return Err(TestError::TestFailed {
+					cause: format!("{}", fail_string),
+				});
+			} else if let Some(fail_string) = x.downcast_ref::<&str>() {
+				return Err(TestError::TestFailed {
+					cause: format!("{}", fail_string),
+				});
+			} else {
+				return Err(TestError::TestFailed {
+					cause: format!("Couldn't get detailed failure string: {:?}", x),
+				});
+			}
+		}
+		_ => {
+			return Err(TestError::TestFailed {
+				cause: "Test failed for unknown reason".to_string(),
+			});
+		}
+	}
+}
+
 /**
  * TODO
  */
@@ -35,29 +64,7 @@ pub fn parallel_job(
 		StaticFrontend::instance()?.log(&format!("Starting test: {:?}", test));
 	}
 	//Run the test.
-	let mut test_result = Err(TestError::TestNotRun);
-
-	let initial_test_result = panic::catch_unwind(test);
-	match initial_test_result {
-		Ok(_) => {
-			test_result = Ok(());
-		}
-		Err(x) => {
-			if let Some(fail_string) = x.downcast_ref::<String>() {
-				test_result = Err(TestError::TestFailed {
-					cause: format!("{}", fail_string),
-				});
-			} else if let Some(fail_string) = x.downcast_ref::<&str>() {
-				test_result = Err(TestError::TestFailed {
-					cause: format!("{}", fail_string),
-				});
-			} else {
-				test_result = Err(TestError::TestFailed {
-					cause: format!("Couldn't get detailed failure string: {:?}", x),
-				});
-			}
-		}
-	}
+	let test_result = do_test(test);
 
 	//	Increment run counter accordingly.
 	**get_write_lock(&tests_evaluated_count_lock)? += 1;

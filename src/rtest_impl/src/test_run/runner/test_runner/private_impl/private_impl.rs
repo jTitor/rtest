@@ -152,7 +152,7 @@ impl PrivateImpl for TestRunner {
 			if let Some(frontend) = frontend_option {
 				frontend.log(&format!("Test starting: {:?}", test));
 				//	Run the test.
-				unimplemented!();
+				let test_result = do_test(test);
 				//	Save any test failure details to run_results.failures list.
 				unimplemented!();
 				//	Increment run counter accordingly.
