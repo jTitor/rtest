@@ -1,6 +1,9 @@
 /*!
  * Defines the ```discovery``` module.
  */
+mod test_entry;
+pub use self::test_entry::*;
+
 mod test_lists;
 pub use self::test_lists::*;
 

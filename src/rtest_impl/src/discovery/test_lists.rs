@@ -1,14 +1,15 @@
 /*!
  * Defines the TestLists struct.
  */
+use crate::discovery::TestEntry;
 
 /**
  * Contains all of the tests marked by the #[test] and #[ignore] tags.
  */
 pub struct TestLists {
-	_main_tests: Vec<u64>,
-	_parallel_tests: Vec<u64>,
-	_ignored_tests: Vec<u64>,
+	_main_tests: Vec<TestEntry>,
+	_parallel_tests: Vec<TestEntry>,
+	_ignored_tests: Vec<TestEntry>,
 }
 
 impl TestLists {
@@ -29,14 +30,14 @@ impl TestLists {
 	/**
 	 * Returns the list of main-thread-only tests recorded in this TestLists instance.
 	 */
-	pub fn main_tests(&self) -> &Vec<u64> {
+	pub fn main_tests(&self) -> &Vec<TestEntry> {
 		&self._main_tests
 	}
 
 	/**
 	 * Adds a test to the TestList's list of main-thread-only tests.
 	 */
-	pub fn add_main_test(&mut self, main_test: u64) {
+	pub fn add_main_test(&mut self, main_test: TestEntry) {
 		//Sanity check: Is this already in parallel_tests?
 		let is_in_parallel_tests = true;
 		if is_in_parallel_tests {
@@ -71,14 +72,14 @@ impl TestLists {
 	/**
 	 * Returns the list of parallelizable tests recorded in this TestLists instance.
 	 */
-	pub fn tests(&self) -> &Vec<u64> {
+	pub fn tests(&self) -> &Vec<TestEntry> {
 		&self._parallel_tests
 	}
 
 	/**
 	 * Adds a test to the TestList's list of parallelizable tests.
 	 */
-	pub fn add_test(&mut self, test: u64) {
+	pub fn add_test(&mut self, test: TestEntry) {
 		//Sanity check: Is this already in main_tests?
 		let is_in_main_tests = true;
 		if is_in_main_tests {
@@ -113,14 +114,14 @@ impl TestLists {
 	/**
 	 * Returns the list of ignored tests recorded in this TestLists instance.
 	 */
-	pub fn ignored_tests(&self) -> &Vec<u64> {
+	pub fn ignored_tests(&self) -> &Vec<TestEntry> {
 		&self._ignored_tests
 	}
 
 	/**
 	 * Marks a test as an ignored test in the TestList.
 	 */
-	pub fn ignore_test(&mut self, test: u64) {
+	pub fn ignore_test(&mut self, test: TestEntry) {
 		//Remove test from main_tests and parallel_tests,
 		//if it exists in either list.
 		unimplemented!();
