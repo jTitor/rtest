@@ -1,6 +1,9 @@
 /*!
  * Defines the TestLists struct.
  */
+use failure::Error;
+
+use super::errors::{TestAddError, TestListIdentifier};
 use crate::discovery::TestEntry;
 
 /**
@@ -37,7 +40,7 @@ impl TestLists {
 	/**
 	 * Adds a test to the TestList's list of main-thread-only tests.
 	 */
-	pub fn add_main_test(&mut self, main_test: TestEntry) {
+	pub fn add_main_test(&mut self, main_test: TestEntry) -> Result<TestAddError, Error> {
 		//Sanity check: Is this already in parallel_tests?
 		let is_in_parallel_tests = true;
 		if is_in_parallel_tests {
@@ -45,28 +48,47 @@ impl TestLists {
 			//	Report error, and return here.
 			//	(This is probably being called during macro execution,
 			//	so we don't want to halt all other macros)
-			let error_message = format!(
-				"Can't add test {} to main test list: test is already in parallel tests list",
-				main_test
-			);
+			let error = TestAddError::TestAlreadyInList {
+				list: TestListIdentifier::ParallelList,
+			};
+			//Report to RLS...
 			unimplemented!();
 
-			return;
+			return Err(error.into());
 		}
+
 		//Else:
-		else {
-			//	Add the test to main_tests.
-			unimplemented!();
+		//Is this already in main_tests?
+		let is_in_main_tests = true;
+		if is_in_main_tests {
+			//If so:
+			//	Early out and report the
+			//test's already in the desired list.
+			return Ok(TestAddError::TestAlreadyInList {
+				list: TestListIdentifier::MainList,
+			});
 		}
 
 		//DEBUG ASSERT: test is now in main_tests
 		let is_in_main_tests = false;
 		unimplemented!();
-		debug_assert!(
-			is_in_main_tests,
-			"Test {} is not in main tests list",
-			main_test
-		);
+		if !is_in_main_tests {
+			let error = TestAddError::ListAppendFailed {
+				list: TestListIdentifier::MainList,
+			};
+
+			debug_assert!(
+				is_in_main_tests,
+				"Test {} is not in main tests list",
+				main_test
+			);
+
+			//report to RLS
+			unimplemented!();
+			return Err(error.into());
+		}
+
+		Ok(TestAddError::Success)
 	}
 
 	/**
@@ -79,7 +101,7 @@ impl TestLists {
 	/**
 	 * Adds a test to the TestList's list of parallelizable tests.
 	 */
-	pub fn add_test(&mut self, test: TestEntry) {
+	pub fn add_test(&mut self, test: TestEntry) -> Result<TestAddError, Error> {
 		//Sanity check: Is this already in main_tests?
 		let is_in_main_tests = true;
 		if is_in_main_tests {
@@ -87,28 +109,45 @@ impl TestLists {
 			//	Report error, and return here.
 			//	(This is probably being called during macro execution,
 			//	so we don't want to halt all other macros)
-			let error_message = format!(
-				"Can't add test {} to parallel test list: test is already in main tests list",
-				test
-			);
+			let error = TestAddError::TestAlreadyInList {
+				list: TestListIdentifier::MainList,
+			};
+			//Report to RLS...
 			unimplemented!();
 
-			return;
+			return Err(error.into());
 		}
+
 		//Else:
-		else {
-			//	Add the test to parallel_tests.
-			unimplemented!();
+		//Is this already in parallel_tests?
+		let is_in_parallel_tests = true;
+		if is_in_parallel_tests {
+			//If so, early out and report success.
+			return Ok(TestAddError::TestAlreadyInList {
+				list: TestListIdentifier::ParallelList,
+			});
 		}
+
+		//	Add the test to parallel_tests.
+		unimplemented!();
 
 		//DEBUG ASSERT: test is now in parallel_tests
 		let is_in_parallel_tests = false;
 		unimplemented!();
-		debug_assert!(
-			is_in_parallel_tests,
-			"Test {} is not in parallel tests list",
-			test
-		);
+		if !is_in_parallel_tests {
+			let error = TestAddError::ListAppendFailed {
+				list: TestListIdentifier::ParallelList,
+			};
+
+			debug_assert!(false, "Test {} is not in parallel tests list", test);
+
+			//report to RLS
+			unimplemented!();
+
+			return Err(error.into());
+		}
+
+		Ok(TestAddError::Success)
 	}
 
 	/**
@@ -121,7 +160,7 @@ impl TestLists {
 	/**
 	 * Marks a test as an ignored test in the TestList.
 	 */
-	pub fn ignore_test(&mut self, test: TestEntry) {
+	pub fn ignore_test(&mut self, test: TestEntry) -> Result<TestAddError, Error> {
 		//Remove test from main_tests and parallel_tests,
 		//if it exists in either list.
 		unimplemented!();
@@ -129,30 +168,75 @@ impl TestLists {
 		//DEBUG ASSERT: test is not in main_tests
 		let is_in_main_tests = true;
 		unimplemented!();
-		debug_assert!(
-			!is_in_main_tests,
-			"Test {} is still in main tests list despite being ignored",
-			test
-		);
+		if is_in_main_tests {
+			let error = TestAddError::ListRemoveFailed {
+				list: TestListIdentifier::MainList,
+			};
+
+			debug_assert!(
+				!is_in_main_tests,
+				"Test {} is still in main tests list despite being ignored",
+				test
+			);
+
+			//report to RLS
+			unimplemented!();
+
+			return Err(error.into());
+		}
 		//DEBUG ASSERT: test is not in parallel_tests
 		let is_in_parallel_tests = true;
 		unimplemented!();
-		debug_assert!(
-			!is_in_parallel_tests,
-			"Test {} is still in parallel tests list despite being ignored",
-			test
-		);
+		if is_in_parallel_tests {
+			let error = TestAddError::ListRemoveFailed {
+				list: TestListIdentifier::ParallelList,
+			};
 
-		//Add the test to ignored_tests.
+			debug_assert!(
+				!is_in_parallel_tests,
+				"Test {} is still in parallel tests list despite being ignored",
+				test
+			);
+
+			//report to RLS
+			unimplemented!();
+
+			return Err(error.into());
+		}
+
+		//Is this already in ignored_tests?
+		let mut is_in_ignored_tests = false;
+		if is_in_ignored_tests {
+			//If so, early out.
+			return Ok(TestAddError::TestAlreadyInList {
+				list: TestListIdentifier::IgnoredList,
+			});
+		}
+
+		//Else, add the test to ignored_tests.
 		unimplemented!();
 
 		//DEBUG ASSERT: test is now in ignored_tests
-		let is_in_ignored_tests = false;
+		is_in_ignored_tests = false;
 		unimplemented!();
-		debug_assert!(
-			is_in_ignored_tests,
-			"Test {} is not in ignored tests list",
-			test
-		);
+		if !is_in_ignored_tests {
+			let error = TestAddError::ListAppendFailed {
+				list: TestListIdentifier::IgnoredList,
+			};
+
+			debug_assert!(
+				is_in_ignored_tests,
+				"Test {} is not in ignored tests list",
+				test
+			);
+
+			//report to RLS
+			unimplemented!();
+
+			return Err(error.into());
+		}
+
+		//We're done, return success
+		Ok(TestAddError::Success)
 	}
 }

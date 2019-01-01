@@ -4,6 +4,8 @@
 mod test_entry;
 pub use self::test_entry::*;
 
+mod errors;
+
 mod test_lists;
 pub use self::test_lists::*;
 
