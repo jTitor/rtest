@@ -29,12 +29,12 @@ pub fn do_attribute_ignore(_attr: &TokenStream, item: &TokenStream) {
 		//Else:
 		else {
 			//Report failure.
-			common::warn_list_instance_failed(attribute_name);
+			common::warn_list_instance_failed(&attribute_name);
 		}
 	}
 	else {
 		//Else:
 		//	Warn that the item isn't a function and that this tag has no effect.
-		common::warn_not_function(item, attribute_name);
+		common::warn_not_function(item, &attribute_name);
 	}
 }

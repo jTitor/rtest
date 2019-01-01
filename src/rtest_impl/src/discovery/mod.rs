@@ -1,6 +1,8 @@
 /*!
  * Defines the ```discovery``` module.
  */
+mod rls_common;
+
 mod test_entry;
 pub use self::test_entry::*;
 

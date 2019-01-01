@@ -3,9 +3,9 @@
  */
 use failure::Error;
 
-use super::common;
 use super::errors::{TestAddError, TestListIdentifier};
 use crate::discovery::TestEntry;
+use crate::discovery::rls_common;
 
 /**
  * Contains all of the tests marked by the #[test] and #[ignore] tags.
@@ -83,7 +83,7 @@ impl TestLists {
 			debug_assert!(false, "Test {} is not in {} list", test, list_identifier);
 
 			//report to RLS
-			common::post_rls_error(&error);
+			rls_common::post_rls_error(&error);
 			return Err(error.into());
 		}
 
@@ -110,7 +110,7 @@ impl TestLists {
 				list: list_identifier,
 			};
 			//Report to RLS...
-			common::post_rls_error(&error);
+			rls_common::post_rls_error(&error);
 
 			return Err(error.into());
 		}
@@ -153,7 +153,7 @@ impl TestLists {
 			);
 
 			//report to RLS
-			common::post_rls_error(&error);
+			rls_common::post_rls_error(&error);
 
 			return Err(error.into());
 		}

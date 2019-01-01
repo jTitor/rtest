@@ -21,9 +21,9 @@ impl fmt::Display for TestListIdentifier {
 		let mut display_str = "";
 
 		match self {
-			MainList => display_str = MAIN_TESTS_LIST_NAME,
-			ParallelList => display_str = PARALLEL_TESTS_LIST_NAME,
-			IgnoredList => display_str = IGNORED_TESTS_LIST_NAME,
+			TestListIdentifier::MainList => display_str = MAIN_TESTS_LIST_NAME,
+			TestListIdentifier::ParallelList => display_str = PARALLEL_TESTS_LIST_NAME,
+			TestListIdentifier::IgnoredList => display_str = IGNORED_TESTS_LIST_NAME,
 		}
 
 		write!(f, "{}", display_str)
