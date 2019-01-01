@@ -21,6 +21,9 @@ pub fn get_write_lock<'a, T>(lock: &'a RwLock<T>) -> Result<RwLockWriteGuard<'a,
 	}
 }
 
+/**
+ * TODO
+ */
 pub fn do_test(test: fn()) -> Result<(), TestError> {
 	let initial_test_result = panic::catch_unwind(test);
 	match initial_test_result {
