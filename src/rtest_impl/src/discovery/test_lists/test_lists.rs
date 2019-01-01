@@ -119,6 +119,21 @@ impl TestLists {
 	}
 
 	/**
+	 * Removes all instances of the given
+	 * test from the requested test list.
+	 */
+	fn remove_from_list(
+		&mut self,
+		test: &TestEntry,
+		list_identifier: TestListIdentifier,
+	) -> Result<(), Error> {
+		//self.get_list_mut(list_identifier).(...)
+		unimplemented!();
+
+		Ok(())
+	}
+
+	/**
 	 * TODO
 	 */
 	fn verify_removed_from_list(
@@ -240,8 +255,8 @@ impl TestLists {
 	pub fn ignore_test(&mut self, test: TestEntry) -> Result<TestAddError, Error> {
 		//Remove test from main_tests and parallel_tests,
 		//if it exists in either list.
-		//DEBUG ASSERT: There's only one element to be removed.
-		unimplemented!();
+		self.remove_from_list(&test, TestListIdentifier::MainList)?;
+		self.remove_from_list(&test, TestListIdentifier::ParallelList)?;
 
 		//DEBUG ASSERT: test is not in main_tests
 		self.verify_removed_from_list(&test, TestListIdentifier::MainList)?;
