@@ -12,6 +12,10 @@ use failure::{Error, Fail};
  */
 #[derive(Debug, Fail)]
 pub enum TestRunError {
+	#[fail(display = "Unknown test run failure")]
+	UnknownError,
+	#[fail(display = "Not all resources needed for test run could be retrieved: {}", cause)]
+	ResourcesNotReady { cause: Error },
 	#[fail(display = "Failed to execute all tests in test list: {}, run results before error are: {}", cause, run_results)]
 	TestRunError { cause: Error, run_results: RunResults },
 }

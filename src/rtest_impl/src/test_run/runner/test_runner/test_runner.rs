@@ -20,6 +20,7 @@ impl TestRunner {
 	fn do_run(&mut self) -> Result<RunResults, TestRunError> {
 		let mut run_results = RunResults::new();
 
+		//TODO: parameterize this and frontend
 		let mut test_list_option: Option<StaticTestListInstance> = None;
 
 		let mut frontend_option: Option<StaticFrontendInstance> = None;
@@ -35,10 +36,8 @@ impl TestRunner {
 					frontend_option = Some(frontend_result);
 				}
 				(Err(x), _) | (_, Err(x)) => {
-					return Err(TestRunError::TestRunError {
-						cause: x,
-						run_results: run_results,
-					});
+					//Early out with error if either couldn't be retrieved
+					return Err(TestRunError::ResourcesNotReady { cause: x });
 				}
 			}
 		}
@@ -73,7 +72,9 @@ impl TestRunner {
 			//Not all resources are available,
 			//so we can't report failure to frontend
 			//Just return an error here
-			return Ok(run_results);
+			return Err(TestRunError::ResourcesNotReady {
+				cause: TestRunError::UnknownError.into(),
+			});
 		}
 		unreachable!();
 	}
