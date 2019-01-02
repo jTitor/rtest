@@ -9,8 +9,8 @@ use failure::Error;
 use rayon::prelude::*;
 
 use super::common::*;
-use crate::discovery::StaticTestListInstance;
-use crate::frontend::{StaticFrontend, StaticFrontendInstance};
+use crate::discovery::TestLists;
+use crate::frontend::Frontend;
 use crate::test_run::runner::errors::TestRunnerError;
 use crate::test_run::FailureDetail;
 use crate::test_run::{RunResults, TestRunner};
@@ -18,19 +18,22 @@ use crate::test_run::{RunResults, TestRunner};
 pub trait PrivateImpl {
 	fn handle_ignored_tests(
 		&mut self,
-		test_list: &StaticTestListInstance,
+		test_list: &TestLists,
+		frontend: &Frontend,
 		run_results: &mut RunResults,
 	) -> Result<(), Error>;
 
 	fn run_parallel_tests(
 		&mut self,
-		test_list: &StaticTestListInstance,
+		test_list: &TestLists,
+		frontend: &Frontend,
 		run_results: &mut RunResults,
 	) -> Result<(), Error>;
 
 	fn run_main_tests(
 		&mut self,
-		test_list: &StaticTestListInstance,
+		test_list: &TestLists,
+		frontend: &Frontend,
 		run_results: &mut RunResults,
 	) -> Result<(), Error>;
 }
@@ -41,7 +44,8 @@ impl PrivateImpl for TestRunner {
 	 */
 	fn handle_ignored_tests(
 		&mut self,
-		test_list: &StaticTestListInstance,
+		test_list: &TestLists,
+		frontend: &Frontend,
 		run_results: &mut RunResults,
 	) -> Result<(), Error> {
 		//For each test in ignored_tests:
@@ -60,7 +64,8 @@ impl PrivateImpl for TestRunner {
 	 */
 	fn run_parallel_tests(
 		&mut self,
-		test_list: &StaticTestListInstance,
+		test_list: &TestLists,
+		frontend: &Frontend,
 		run_results: &mut RunResults,
 	) -> Result<(), Error> {
 		//Iterate over parallel_tests:
@@ -70,10 +75,8 @@ impl PrivateImpl for TestRunner {
 		let num_tests = test_list.tests().len();
 
 		//Setup locks for the jobs
+		//TODO: RwLock on the *results*
 		let pass_count_lock = RwLock::new(&mut run_results.pass_count);
-		let fail_count_lock = RwLock::new(&mut run_results.fail_count);
-		let ignore_count_lock = RwLock::new(&mut run_results.ignore_count);
-		let tests_evaluated_count_lock = RwLock::new(&mut run_results.tests_evaluated_count);
 
 		for x in 0..(num_tests / num_cores) {
 			let base_index = x * num_cores;
@@ -137,42 +140,39 @@ impl PrivateImpl for TestRunner {
 	 */
 	fn run_main_tests(
 		&mut self,
-		test_list: &StaticTestListInstance,
+		test_list: &TestLists,
+		frontend: &Frontend,
 		run_results: &mut RunResults,
 	) -> Result<(), Error> {
 		//For each test in main_tests:
 		for test in test_list.main_tests().iter() {
 			//	Report that the test is starting to frontend.
-			let mut frontend_option: Option<StaticFrontendInstance> = None;
-			unsafe {
-				let frontend = StaticFrontend::instance().unwrap();
-				frontend_option = Some(frontend);
+			frontend.log(&format!("Test starting: {}", test));
+
+			//	Run the test.
+			let test_result = do_test(test.test);
+			
+			//Handle pass/fail...
+			//an Err() here indicates the test failed,
+			//whether the code being tested failed
+			//or the harness itself.
+			if let Err(test_error) = test_result {
+				//	Save any test failure details to run_results.failures list.
+				let failure_detail = FailureDetail::parse_from_string(&test.to_string(), &test_error.to_string());
+
+				run_results.add_failure(failure_detail);
+
+				//Report to frontend.
+				frontend.log(&format!("Test failed: {:?}", test));
 			}
 
-			if let Some(frontend) = frontend_option {
-				frontend.log(&format!("Test starting: {}", test));
-				//	Run the test.
-				let test_result = do_test(test.test);
-				//	Save any test failure details to run_results.failures list.
-				unimplemented!();
-				//	Increment run counter accordingly.
-				run_results.tests_evaluated_count += 1;
-
-				//Handle pass/fail...
-				let test_passed = false;
-				let test_failed = false;
-				if test_failed {
-					//increment failure counter accordingly.
-					run_results.fail_count += 1;
-					//Report to frontend.
-					frontend.log(&format!("Test failed: {:?}", test));
-				}
-				if test_passed {
-					//	Increment pass counter (?) accordingly.
-					run_results.pass_count += 1;
-					//Report to frontend.
-					frontend.log(&format!("Test passed: {:?}", test));
-				}
+			//Otherwise, report a pass
+			let test_passed = false;
+			if test_passed {
+				//	Increment pass counter (?) accordingly.
+				run_results.add_pass();
+				//Report to frontend.
+				frontend.log(&format!("Test passed: {:?}", test));
 			}
 		}
 

@@ -18,7 +18,14 @@ pub struct FailureDetail {
  * TODO
 */
 fn parse_failure_string(failure_raw_string: &str) -> (String, u64, String, String) {
-	unimplemented!();
+	//TODO: implement actual parsing
+	//once we have output from tests
+	(
+		"TODO".to_string(),
+		Default::default(),
+		"TODO".to_string(),
+		failure_raw_string.to_string(),
+	)
 }
 
 impl FailureDetail {
@@ -35,6 +42,19 @@ impl FailureDetail {
 			failure_line: failure_line,
 			failure_backtrace: failure_backtrace,
 			failure_reason: failure_reason,
+		}
+	}
+
+	/**
+	 * TODO
+	*/
+	pub fn from_raw_string(test_name: &str, failure_raw_string: &str) -> FailureDetail {
+		FailureDetail {
+			test_name: test_name.to_string(),
+			failure_file: Default::default(),
+			failure_line: Default::default(),
+			failure_backtrace: Default::default(),
+			failure_reason: failure_raw_string.to_string(),
 		}
 	}
 }
