@@ -2,12 +2,25 @@
  * TODO
 */
 use std::panic;
-use std::sync::{RwLock, RwLockWriteGuard};
+use std::sync::{Mutex, MutexGuard, RwLock, RwLockWriteGuard};
 
 use failure::Error;
 
-use crate::frontend::{StaticFrontend, StaticFrontendInstance};
+use crate::frontend::{Frontend, StaticFrontend, StaticFrontendInstance};
 use crate::test_run::runner::errors::{GetLockError, TestError};
+use crate::test_run::{FailureDetail, RunResults};
+
+/**
+ * TODO
+ */
+pub fn get_mutex_lock<'a, T>(lock: &'a Mutex<T>) -> Result<MutexGuard<'a, T>, Error> {
+	let lock_result = lock.lock();
+
+	match lock_result {
+		Ok(return_lock) => Ok(return_lock),
+		Err(_) => Err(GetLockError::LockPoisoned.into()),
+	}
+}
 
 /**
  * TODO
@@ -57,43 +70,35 @@ pub fn do_test(test: fn()) -> Result<(), TestError> {
  * TODO
  */
 pub fn parallel_job(
-	fail_count_lock: RwLock<&mut u64>,
-	pass_count_lock: RwLock<&mut u64>,
-	tests_evaluated_count_lock: RwLock<&mut u64>,
+	run_results_lock: &RwLock<&mut RunResults>,
+	frontend_mutex: &Mutex<&Frontend>,
 	test: fn(),
 ) -> Result<(), Error> {
 	//Report that the test is starting to frontend.
-	unsafe {
-		StaticFrontend::instance()?.log(&format!("Starting test: {:?}", test));
-	}
+	get_mutex_lock(frontend_mutex)?.log(&format!("Starting test: {:?}", test));
+	
 	//Run the test.
 	let test_result = do_test(test);
 
-	//	Increment run counter accordingly.
-	**get_write_lock(&tests_evaluated_count_lock)? += 1;
-
 	//Handle pass/fail...
-	let mut frontend_option: Option<StaticFrontendInstance> = None;
-	unsafe {
-		frontend_option = Some(StaticFrontend::instance()?);
-	}
-	if let Some(frontend) = frontend_option {
-		match test_result {
-			Ok(_) => {
-				//	Increment pass counter (?) accordingly.
-				**get_write_lock(&pass_count_lock)? += 1;
-				//Report to frontend.
-				frontend.log(&format!("Test passed: {:?}", test));
-			}
-			Err(x) => {
-				//increment failure counter accordingly.
-				**get_write_lock(&fail_count_lock)? += 1;
-				//Report to frontend.
-				frontend.log(&format!("Test {:?} failed: {}", test, x));
-				//Add the failure reason to the overall list.
-				x;
-				unimplemented!();
-			}
+	match test_result {
+		Ok(_) => {
+			//	Increment pass counter (?) accordingly.
+			get_write_lock(run_results_lock)?.add_pass();
+			//Report to frontend.
+			get_mutex_lock(frontend_mutex)?.log(&format!("Test passed: {:?}", test));
+		}
+		Err(x) => {
+			let error_string: String = format!("{}", x).to_string();
+			//Add the failure reason to the overall list.
+			//increment failure counter accordingly.
+			get_write_lock(run_results_lock)?.add_failure(FailureDetail::parse_from_string(
+				"TODO",
+				error_string.as_str(),
+			));
+			//Report to frontend.
+			get_mutex_lock(frontend_mutex)?
+				.log(&format!("Test {:?} failed: {}", test, error_string));
 		}
 	}
 

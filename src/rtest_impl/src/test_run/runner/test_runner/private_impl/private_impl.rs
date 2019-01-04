@@ -3,7 +3,7 @@
 */
 use std::cmp;
 use std::panic;
-use std::sync::RwLock;
+use std::sync::{Mutex, RwLock};
 
 use failure::Error;
 use rayon::prelude::*;
@@ -51,9 +51,9 @@ impl PrivateImpl for TestRunner {
 		//For each test in ignored_tests:
 		for test in test_list.ignored_tests().iter() {
 			//	Report that the test is ignored to frontend.
-			unimplemented!();
+			frontend.log(&format!("Ignoring test: {}", test));
 			//	Increment ignored counter accordingly.
-			unimplemented!();
+			run_results.add_ignore();
 		}
 
 		Ok(())
@@ -68,69 +68,22 @@ impl PrivateImpl for TestRunner {
 		frontend: &Frontend,
 		run_results: &mut RunResults,
 	) -> Result<(), Error> {
-		//Iterate over parallel_tests:
-		//going to do N jobs,
-		//where N = number of cores
-		let num_cores = 1;
-		let num_tests = test_list.tests().len();
-
 		//Setup locks for the jobs
-		//TODO: RwLock on the *results*
-		let pass_count_lock = RwLock::new(&mut run_results.pass_count);
+		let run_result_lock = RwLock::new(run_results);
+		let frontend_mutex = Mutex::new(frontend);
+		let mut any_jobs_failed = false;
+		let any_jobs_failed_lock = Mutex::new(&mut any_jobs_failed);
 
-		for x in 0..(num_tests / num_cores) {
-			let base_index = x * num_cores;
-			//Sanity check: base index <= number of tests,
-			//otherwise our clamping won't make sense
-			assert!(base_index <= num_tests);
-
-			//Going to make N jobs,
-			//where N = number of cores on system
-			//Clamp to remaining number of tests
-			let num_jobs = cmp::min(num_cores, num_tests - base_index);
-			//	Create a list of N test failure details
-			let mut test_failures: Vec<Result<(), TestRunnerError>> = vec![];
-
-			for _ in 0..num_jobs {
-				test_failures.push(Ok(()));
-			}
-
-			//Dispatch the N jobs:
-			for y in 0..num_jobs {
-				//	Get next N tests
-				let test_index = base_index + y;
-				unimplemented!();
-
-				//	Create a job for each test:
-				let job = |test: fn()| {
-					//Actually run the test.
-					let job_result = parallel_job(
-						fail_count_lock,
-						pass_count_lock,
-						tests_evaluated_count_lock,
-						test,
-					);
-
-					//Convert any errors into our error type.
-					test_failures[y] = {
-						match job_result {
-							Ok(_) => Ok(()),
-							Err(x) => Err(TestRunnerError::JobFailed { cause: x.into() }),
-						}
-					};
-				};
-				//	Dispatch the job...
-				unimplemented!();
-			}
-
-			//Wait for the N jobs.
-			for y in 0..num_jobs {
-				//Now wait for each job.
-				unimplemented!();
-				//If a job had an error, copy the error details here.
-				unimplemented!();
-			}
-		}
+		//Dispatch the tests in parallel...
+		//Any test failures will have already been added
+		//to run_results, so drop the result collection
+		//we get from the tests
+		let _ = test_list.tests().par_iter()
+		.map(|test_entry| {
+			//Actually run the test.
+			parallel_job(&run_result_lock, &frontend_mutex, test_entry.test)
+		})
+		.collect::<Result<(), Error>>();
 
 		Ok(())
 	}
@@ -151,14 +104,15 @@ impl PrivateImpl for TestRunner {
 
 			//	Run the test.
 			let test_result = do_test(test.test);
-			
+
 			//Handle pass/fail...
 			//an Err() here indicates the test failed,
 			//whether the code being tested failed
 			//or the harness itself.
 			if let Err(test_error) = test_result {
 				//	Save any test failure details to run_results.failures list.
-				let failure_detail = FailureDetail::parse_from_string(&test.to_string(), &test_error.to_string());
+				let failure_detail =
+					FailureDetail::parse_from_string(&test.to_string(), &test_error.to_string());
 
 				run_results.add_failure(failure_detail);
 

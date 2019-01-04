@@ -1,7 +1,7 @@
 /*!
  * Defines the EventLog struct.
  */
-use std::rc::Rc;
+use std::sync::Arc;
 
 use super::TerminalView;
 
@@ -9,7 +9,7 @@ use super::TerminalView;
  * Stores events, and sends them to subscribing views for display.
  */
 pub struct EventLog {
-	_views: Vec<Rc<TerminalView>>,
+	_views: Vec<Arc<TerminalView>>,
 }
 
 impl EventLog {
@@ -25,7 +25,7 @@ impl EventLog {
 	/**
 	 * TODO
 	 */
-	pub fn subscribe(&mut self, subscribing_view: Rc<TerminalView>) {
+	pub fn subscribe(&mut self, subscribing_view: Arc<TerminalView>) {
 		self._views.push(subscribing_view.clone());
 	}
 

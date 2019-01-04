@@ -11,8 +11,8 @@ use crate::test_run::FailureDetail;
 #[derive(Debug, Clone)]
 pub struct RunResults {
 	_failures: Vec<FailureDetail>,
-	_pass_count: u64,
-	_ignore_count: u64,
+	_pass_count: usize,
+	_ignore_count: usize,
 }
 
 impl RunResults {
@@ -34,7 +34,7 @@ impl RunResults {
 		&self._failures
 	}
 
-	pub fn failure_count(&self) -> u64 {
+	pub fn failure_count(&self) -> usize {
 		self._failures.len()
 	}
 
@@ -48,7 +48,7 @@ impl RunResults {
 	/**
 	 * TODO
 	 */
-	pub fn pass_count(&self) -> u64 {
+	pub fn pass_count(&self) -> usize {
 		self._pass_count
 	}
 
@@ -62,7 +62,7 @@ impl RunResults {
 	/**
 	 * TODO
 	 */
-	pub fn ignore_count(&self) -> u64 {
+	pub fn ignore_count(&self) -> usize {
 		self._ignore_count
 	}
 
@@ -73,13 +73,13 @@ impl RunResults {
 		self._ignore_count += 1;
 	}
 
-	pub fn tests_evaluated_count(&self) -> u64 {
+	pub fn tests_evaluated_count(&self) -> usize {
 		self.failure_count() + self.pass_count() + self.ignore_count()
 	}
 }
 
 impl fmt::Display for RunResults {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "(\npass_count: {},\nfail_count: {},\nignore_count: {},\ntests_evaluated_count: {})", self.pass_count(), self.fail_count(), self.ignore_count(), self.tests_evaluated_count())
+		write!(f, "(\npass_count: {},\nfail_count: {},\nignore_count: {},\ntests_evaluated_count: {})", self.pass_count(), self.failure_count(), self.ignore_count(), self.tests_evaluated_count())
 	}
 }
