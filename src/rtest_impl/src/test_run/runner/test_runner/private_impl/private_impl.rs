@@ -78,12 +78,14 @@ impl PrivateImpl for TestRunner {
 		//Any test failures will have already been added
 		//to run_results, so drop the result collection
 		//we get from the tests
-		let _ = test_list.tests().par_iter()
-		.map(|test_entry| {
-			//Actually run the test.
-			parallel_job(&run_result_lock, &frontend_mutex, test_entry.test)
-		})
-		.collect::<Result<(), Error>>();
+		let _ = test_list
+			.tests()
+			.par_iter()
+			.map(|test_entry| {
+				//Actually run the test.
+				parallel_job(&run_result_lock, &frontend_mutex, test_entry.test)
+			})
+			.collect::<Result<(), Error>>();
 
 		Ok(())
 	}
@@ -103,7 +105,7 @@ impl PrivateImpl for TestRunner {
 			frontend.log(&format!("Test starting: {}", test));
 
 			//	Run the test.
-			let test_result = do_test(test.test);
+			let test_result = test_on_main_thread(test.test);
 
 			//Handle pass/fail...
 			//an Err() here indicates the test failed,

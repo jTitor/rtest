@@ -1,10 +1,13 @@
 /*!
  * TODO
 */
+use std::thread::Thread;
 use std::panic;
 use std::sync::{Mutex, MutexGuard, RwLock, RwLockWriteGuard};
 
 use failure::Error;
+#[cfg(macos)]
+use dispatch::Queue;
 
 use crate::frontend::{Frontend, StaticFrontend, StaticFrontendInstance};
 use crate::test_run::runner::errors::{GetLockError, TestError};
@@ -76,7 +79,7 @@ pub fn parallel_job(
 ) -> Result<(), Error> {
 	//Report that the test is starting to frontend.
 	get_mutex_lock(frontend_mutex)?.log(&format!("Starting test: {:?}", test));
-	
+
 	//Run the test.
 	let test_result = do_test(test);
 
@@ -103,4 +106,28 @@ pub fn parallel_job(
 	}
 
 	Ok(())
+}
+
+fn run_on_main_thread(function: fn(fn()) -> Result<(), TestError>, test_function: fn()) -> Result<(), TestError> {
+	//Depends on OS.
+
+	//If on macOS, use GCD.
+	#[cfg(macos)]
+	{
+		return Queue::main().sync(|| {
+			return function(test_function);
+		});
+	}
+	//Under anything else, run the function directly
+	//as the runner has to operate under the main thread.
+	#[cfg(not(macos))]
+	{
+		return function(test_function);
+	}
+
+	unreachable!();
+}
+
+pub fn test_on_main_thread(test_function: fn()) -> Result<(), TestError> {
+	run_on_main_thread(do_test, test_function)
 }

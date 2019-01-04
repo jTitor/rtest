@@ -17,7 +17,7 @@ impl TestRunner {
 	/**
 	 * TODO
 	 */
-	fn do_run(
+	pub fn do_run(
 		&mut self,
 		test_list: &TestLists,
 		frontend: &Frontend,
