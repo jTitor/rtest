@@ -7,9 +7,11 @@
 //that the section needs expanding
 #![allow(unreachable_code)]
 
-extern crate proc_macro;
 extern crate failure;
+extern crate proc_macro;
 extern crate rayon;
+extern crate quote;
+extern crate syn;
 
 //Define our base level modules.
 pub mod discovery;

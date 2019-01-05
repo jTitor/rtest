@@ -9,6 +9,9 @@ use failure::Error;
 use super::common;
 use super::super::{StaticTestList, StaticTestListError, TestLists};
 
+/**
+ * TODO
+ */
 pub fn do_attribute_ignore(_attr: &TokenStream, item: &TokenStream) {
 	let attribute_name: String = "ignore".into();
 

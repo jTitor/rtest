@@ -10,6 +10,9 @@ failure = "*"#"0.1.1"
 log = "*"
 rayon = "*"
 
+syn = {version = "*", features = ["full", "visit", "visit-mut", "fold"]}
+quote = {version = "*"}
+
 [target.'cfg(target_os = "macos")'.dependencies]
 #This is needed for testing on macOS,
 #as the native GUI tests will freak out

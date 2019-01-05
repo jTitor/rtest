@@ -15,5 +15,5 @@ pub use self::static_test_list::*;
 mod attributes;
 pub use self::attributes::*;
 
-mod discover_tree;
-pub use self::discover_tree::*;
+mod test_harness_root;
+pub use self::test_harness_root::*;
