@@ -266,4 +266,48 @@ impl TestLists {
 		//Now add it to the ignored list
 		self.add_to_list_and_verify(test, TestListIdentifier::IgnoredList)
 	}
+
+	/**
+	 * Appends the given TestEntry's parallel, main, and ignored
+	 * test lists to this TestEntry.
+	 */
+	pub fn push(&mut self, other: &TestLists) {
+		//TODO: really don't like this, but
+		//both TestLists should be valid so their combined list
+		//should still be valid
+		self._parallel_tests.clone_from(other.tests());
+		self._main_tests.clone_from(other.main_tests());
+		self._ignored_tests.clone_from(other.ignored_tests());
+	}
+
+	/**
+	 * Appends each of the given TestEntry instances to this TestEntry.
+	 */
+	pub fn append(&mut self, others: &Vec<TestLists>) {
+		for list in others {
+			self.push(list);
+		}
+	}
+
+	/**
+	 * Generates a TestList
+	 * from the given lists of TestEntries.
+	 */
+	 pub fn from_test_entries(parallel_tests: &Vec<TestEntry>, main_tests: &Vec<TestEntry>, ignored_tests: &Vec<TestEntry>) -> Result<TestLists, Error> {
+		let mut result = TestLists::new();
+
+		for test in parallel_tests {
+			result.add_test(test.clone())?;
+		}
+
+		for test in main_tests {
+			result.add_main_test(test.clone())?;
+		}
+
+		for test in ignored_tests {
+			result.ignore_test(test.clone())?;
+		}
+
+		Ok(result)
+	}
 }

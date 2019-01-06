@@ -3,6 +3,10 @@
  */
 use failure::Error;
 use syn;
+use syn::visit_mut;
+use syn::visit_mut::VisitMut;
+
+use super::syn_ops;
 
 const TEST_LISTS_FUNCTION_NAME: &'static str = "__test_lists";
 
@@ -15,16 +19,39 @@ const TEST_LISTS_FUNCTION_NAME: &'static str = "__test_lists";
 pub struct DiscoverTree {}
 
 impl DiscoverTree {
-	pub fn new() -> Self { Self {} }
+	pub fn new() -> Self {
+		Self {}
+	}
 
 	pub fn discover(&self, file: &mut syn::File) -> Result<(), Error> {
+		//Iterate over the file's items:
+		//For each mod, do a visit.
+		unimplemented!();
+
+		//Now those modules should each have a
+		//__test_mod_functions() listing
+		//their test functions.
+		//Generate a __test_mod_functions() in this file
+		//that concatenates the results of each
+		//module's __test_mod_functions() function.
+		unimplemented!();
+
+		//Also generate a function __run_test_harness() that'll
+		//make a Runner, then
+		//call Runner::run(self::__test_mod_functions()).
+		unimplemented!();
+
+		Ok(())
+	}
+
+	pub fn REMOVE(&self, file: &mut syn::File) -> Result<(), Error> {
 		//First, parse the current file (as parsed_file).
 		//This will give a list of modules
 		//of type ItemMod in parsed_file.items.
 		//For each of those modules, you call
 		//Visit::visit_item_mod(module).
 		//
-		//Your syn::Visit implementation needs to 
+		//Your syn::Visit implementation needs to
 		//have some way to uniquely identify each
 		//marked function/module; if you can get the
 		//full name that would be best,
@@ -54,7 +81,7 @@ impl DiscoverTree {
 		//but it's hard to tell what can and can't be resolved this way.
 		//You'd need two cases - one where the pub use
 		//path is explicit, and one where it's a wildcard,
-		//which you'd then have to pass as info to the 
+		//which you'd then have to pass as info to the
 		//visit_item_mod() method.
 		//...so given all this, just require that the module
 		//be pub, and that the method be pub.
@@ -84,7 +111,7 @@ impl DiscoverTree {
 		We can also know it's only meant to be done once, so if we notice the attrib's called twice
 		we can raise an error.
 		*/
-		
+
 		//Once tree traversal is done, get the TestLists.
 		//Generate a __test_lists() function that
 		//returns the given TestList.
@@ -92,5 +119,97 @@ impl DiscoverTree {
 		//If parse failed, panic; there's no point trying
 		//to test if we don't have a valid test list.
 		unimplemented!();
+	}
+
+	fn reexport_test_functions(&mut self, i: &mut syn::ItemMod) {
+		match &mut i.content {
+			Some((_, ref mut item_vec)) => {
+				//let ignore_functions: Vec<
+				let parallel_reexports: Vec<String> = vec![];
+				let main_reexports: Vec<String> = vec![];
+
+				//Iterate over all the module items:
+				let _ = item_vec
+					.iter()
+					.map(|item| {
+						match item {
+							//	If they're an ItemFn:
+							syn::Item::Fn(fn_item) => {
+								//		If they're an important function:
+								//			If they're an ignore function:
+								//				Add the function name to an ignore list.
+								//			Else, they're a test function by implication:
+								//				If they're a test-main function:
+								//					Add the function name to a test-main list.
+								//				Else:
+								//					Add the function name to a test list.
+							}
+							_ => {
+								//Isn't a function,
+								//add debug text here
+							}
+						}
+					})
+					.collect::<Vec<_>>();
+
+				//Reexport test functions. All will be in the format
+				//"pub fn test_fn_[function name]() { [function name](); }"
+				//Export parallel functions...
+				//Export main functions...
+				
+				//Generate TestEntry lists:
+				//For the parallel functions...
+				//For the main functions...
+				//For the ignored functions...
+				//	TODO: will need an alternate IgnoredTestEntry type
+				//	for this, since there's no point reexporting ignored functions
+
+				unimplemented!();
+			}
+			_ => {
+				//Isn't a function,
+				//add debug text here
+			}
+		}
+
+		//Next, reexport the list of test functions as
+		//pub fn __test_mod_leaf_functions() -> Vec<fn()>.
+		unimplemented!();
+	}
+}
+
+impl VisitMut for DiscoverTree {
+	fn visit_item_mod_mut(&mut self, i: &mut syn::ItemMod) {
+		//Track the module's name.
+		unimplemented!();
+
+		//Reexport all our test functions in this module.
+		self.reexport_test_functions(i);
+
+		//Now continue on the subitems.
+		visit_mut::visit_item_mod_mut(self, i);
+
+		//Create a list of the modules,
+		//and export their function lists (*::__test_mod_leaf_functions)
+		//as
+		//pub fn __test_mod_submod_functions() -> Vec<fn()>.
+		unimplemented!();
+
+		//Export a final function
+		//pub fn __test_mod_functions() -> Vec<fn()>
+		//that returns self::__test_mod_submod_functions //appended to self::__test_mod_leaf_functions.
+		unimplemented!();
+	}
+
+	fn visit_item_fn_mut(&mut self, i: &mut syn::ItemFn) {
+		//Is this function important?
+		if syn_ops::fn_is_important(i) {
+			//If so:
+			//	Reexport this for testing.
+			//That is, !quote a pub fn that just calls this function.
+			// Also create a TestEntry for the reexport.
+		}
+
+		visit_mut::visit_item_fn_mut(self, i);
 	}
 }

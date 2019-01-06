@@ -14,6 +14,10 @@ use crate::test_run::{RunResults, TestRunError};
 pub struct TestRunner {}
 
 impl TestRunner {
+	pub fn new() -> TestRunner {
+		TestRunner {}
+	}
+
 	/**
 	 * TODO
 	 */
