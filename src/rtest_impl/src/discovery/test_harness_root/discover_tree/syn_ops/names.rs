@@ -80,3 +80,10 @@ pub fn main_lists_name() -> String {
 pub fn ignored_lists_name() -> String {
 	"ignored_tests".into()
 }
+
+/**
+ * TODO
+ */
+pub fn run_test_harness_fn_name() -> String {
+	"__run_test_harness".into()
+}

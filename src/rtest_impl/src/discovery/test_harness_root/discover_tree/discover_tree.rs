@@ -116,7 +116,8 @@ impl DiscoverTree {
 		//Also generate a function __run_test_harness() that'll
 		//make a Runner, then
 		//call Runner::run(self::__test_mod_functions()).
-		unimplemented!();
+		syn_ops::append_fn_tokens_to_content_list(&mut file.items,
+		syn_ops::generate_run_test_harness_fn());
 
 		Ok(())
 	}

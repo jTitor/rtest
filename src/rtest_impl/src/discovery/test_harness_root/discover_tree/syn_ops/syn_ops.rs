@@ -58,11 +58,11 @@ pub fn generate_test_entry_fns_all(
 	main_test_fns: &Vec<String>,
 	ignored_test_fns: &Vec<String>,
 ) -> Vec<proc_macro::TokenStream> {
-	(
-		vec![generate_test_entry_fn_list(names::parallel_lists_name(), parallel_test_fns),
+	(vec![
+		generate_test_entry_fn_list(names::parallel_lists_name(), parallel_test_fns),
 		generate_test_entry_fn_list(names::main_lists_name(), main_test_fns),
-		generate_test_entry_fn_list(names::ignored_lists_name(), ignored_test_fns),]
-	)
+		generate_test_entry_fn_list(names::ignored_lists_name(), ignored_test_fns),
+	])
 }
 
 /**
@@ -139,11 +139,35 @@ pub fn generate_test_lists_fn() -> proc_macro::TokenStream {
 }
 
 /**
+ * Generates a TokenStream
+ * representing a function
+ * that runs the test harness.
+ */
+pub fn generate_run_test_harness_fn() -> proc_macro::TokenStream {
+	//Generate a function __run_test_harness() that'll
+	//make a Runner, then
+	//call Runner::run(self::__test_mod_functions()).
+	let fn_name = names::run_test_harness_fn_name();
+	let test_lists_fn_name = names::test_lists_name();
+
+	let expanded = quote! {
+		pub fn #fn_name() {
+			Runner::new().run(#test_lists_fn_name());
+		}
+	};
+
+	expanded.into()
+}
+
+/**
  * Appends the given TokenStream to the given contents Vec.
  *
  * The token stream is assumed to be a list of fn definitions.
  */
-pub fn append_fn_tokens_to_content_list(content: &mut Vec<syn::Item>, tokens: proc_macro::TokenStream) {
+pub fn append_fn_tokens_to_content_list(
+	content: &mut Vec<syn::Item>,
+	tokens: proc_macro::TokenStream,
+) {
 	unimplemented!();
 }
 
