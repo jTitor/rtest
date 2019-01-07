@@ -139,12 +139,11 @@ pub fn generate_test_lists_fn() -> proc_macro::TokenStream {
 }
 
 /**
- * Appends the given TokenStream to the given module's
- * contents Vec.
+ * Appends the given TokenStream to the given contents Vec.
  *
  * The token stream is assumed to be a list of fn definitions.
  */
-pub fn append_fn_tokens_to_mod(module: &mut syn::ItemMod, tokens: proc_macro::TokenStream) {
+pub fn append_fn_tokens_to_content_list(content: &mut Vec<syn::Item>, tokens: proc_macro::TokenStream) {
 	unimplemented!();
 }
 
