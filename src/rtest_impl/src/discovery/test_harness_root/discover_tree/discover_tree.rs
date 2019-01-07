@@ -47,33 +47,7 @@ impl DiscoverTree {
 	fn reexport_test_functions(&mut self, i: &mut syn::ItemMod) {
 		match &mut i.content {
 			Some((_, ref mut item_vec)) => {
-				//let ignore_functions: Vec<
-				let parallel_reexports: Vec<String> = vec![];
-				let main_reexports: Vec<String> = vec![];
-
-				//Iterate over all the module items:
-				let _ = item_vec
-					.iter()
-					.map(|item| {
-						match item {
-							//	If they're an ItemFn:
-							syn::Item::Fn(fn_item) => {
-								//		If they're an important function:
-								//			If they're an ignore function:
-								//				Add the function name to an ignore list.
-								//			Else, they're a test function by implication:
-								//				If they're a test-main function:
-								//					Add the function name to a test-main list.
-								//				Else:
-								//					Add the function name to a test list.
-							}
-							_ => {
-								//Isn't a function,
-								//add debug text here
-							}
-						}
-					})
-					.collect::<Vec<_>>();
+				let (parallel_test_names, main_test_names, ignored_test_names)= syn_ops::collect_marked_fns(item_vec);
 
 				//Reexport test functions. All will be in the format
 				//"pub fn test_fn_[function name]() { [function name](); }"
@@ -86,8 +60,9 @@ impl DiscoverTree {
 				//For the ignored functions...
 				//	TODO: will need an alternate IgnoredTestEntry type
 				//	for this, since there's no point reexporting ignored functions
-
-				unimplemented!();
+				syn_ops::append_fn_tokens_to_mod(
+			i,
+				syn_ops::generate_test_entry_fns_all(parallel_test_names, main_test_names, ignored_test_names));
 			}
 			_ => {
 				//Isn't a function,
@@ -109,30 +84,34 @@ impl VisitMut for DiscoverTree {
 		//Reexport all our test functions in this module.
 		self.reexport_test_functions(i);
 
-		//Now continue on the subitems.
+		//Now traverse the subitems.
 		visit_mut::visit_item_mod_mut(self, i);
 
-		//Create a list of the modules,
-		//and export their function lists (*::__test_mod_leaf_functions)
+		//Get all the submodules...
+		let submodule_names = match i.content {
+			Some((_, item_vec)) => {
+				item_vec.iter()
+				.filter_map(|x| match x {
+					syn::Item::Mod(inner) => Some(inner.ident.to_string()),
+					_ => None
+				})
+				.collect()
+			}
+			_ => vec![]
+		};
+
+		//...and export their function lists (*::__test_mod_leaf_functions)
 		//as
 		//pub fn __test_mod_submod_functions() -> Vec<fn()>.
-		unimplemented!();
+		syn_ops::append_fn_tokens_to_mod(
+			i,
+			syn_ops::generate_test_lists_nodes_fn(&submodule_names));
 
 		//Export a final function
 		//pub fn __test_mod_functions() -> Vec<fn()>
 		//that returns self::__test_mod_submod_functions //appended to self::__test_mod_leaf_functions.
-		unimplemented!();
-	}
-
-	fn visit_item_fn_mut(&mut self, i: &mut syn::ItemFn) {
-		//Is this function important?
-		if syn_ops::fn_is_important(i) {
-			//If so:
-			//	Reexport this for testing.
-			//That is, !quote a pub fn that just calls this function.
-			// Also create a TestEntry for the reexport.
-		}
-
-		visit_mut::visit_item_fn_mut(self, i);
+		syn_ops::append_fn_tokens_to_mod(
+			i,
+			syn_ops::generate_test_lists_fn());
 	}
 }
