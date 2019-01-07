@@ -57,15 +57,11 @@ pub fn generate_test_entry_fns_all(
 	parallel_test_fns: &Vec<String>,
 	main_test_fns: &Vec<String>,
 	ignored_test_fns: &Vec<String>,
-) -> (
-	proc_macro::TokenStream,
-	proc_macro::TokenStream,
-	proc_macro::TokenStream,
-) {
+) -> Vec<proc_macro::TokenStream> {
 	(
-		generate_test_entry_fn_list(names::parallel_lists_name(), parallel_test_fns),
+		vec![generate_test_entry_fn_list(names::parallel_lists_name(), parallel_test_fns),
 		generate_test_entry_fn_list(names::main_lists_name(), main_test_fns),
-		generate_test_entry_fn_list(names::ignored_lists_name(), ignored_test_fns),
+		generate_test_entry_fn_list(names::ignored_lists_name(), ignored_test_fns),]
 	)
 }
 
