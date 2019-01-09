@@ -2,6 +2,8 @@
  * Defines internal operations used by DiscoverTree
  * that use the syn library.
  */
+use std::process;
+
 use syn;
 //Rust 2018 has a bug with path names;
 //use :: prefix to temporarily fix
@@ -152,7 +154,11 @@ pub fn generate_run_test_harness_fn() -> proc_macro::TokenStream {
 
 	let expanded = quote! {
 		pub fn #fn_name() {
-			Runner::new().run(#test_lists_fn_name());
+			process::exit(match Runner::new().run(#test_lists_fn_name()) {
+				Ok(_) => { 0 },
+				_ => { 1 }
+			}
+			);
 		}
 	};
 

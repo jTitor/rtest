@@ -2,7 +2,8 @@
  * Defines the Runner struct.
  */
 use crate::test_run::TestRunner;
-use crate::frontend::Frontend
+use crate::frontend::Frontend;
+use crate::discovery::TestLists;
 
 /**
  * When called in the main thread, retrieves all discovered functions and runs them.
@@ -12,11 +13,24 @@ pub struct Runner {}
 impl Runner {
 	pub new() -> Runner { Runner{} }
 
-	pub run(test_functions: Vec<fn()>) {
+	/**
+	 * Runs the given test list.
+	 */
+	pub run(tests: TestLists) -> Result<(), ()> {
 		let test_runner = TestRunner::new();
 		let frontend = Frontend::new();
 
 		//Actually run the tests here...
-		unimplemented!();
+		let results = test_runner.run(&tests, &frontend);
+		
+		match results {
+			Ok(_) => {
+				//TODO - any reporting here?
+				Ok(()) }
+			Err(_) => {
+				//TODO - any reporting here?
+				Err(())
+			}
+		}
 	}
 }

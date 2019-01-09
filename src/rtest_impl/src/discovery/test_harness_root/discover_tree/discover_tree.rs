@@ -8,8 +8,6 @@ use syn::visit_mut::VisitMut;
 
 use super::syn_ops;
 
-const TEST_LISTS_FUNCTION_NAME: &'static str = "__test_lists";
-
 /**
  * Runs attribute calls over
  * a given AST tree, exposing the
