@@ -7,6 +7,7 @@
 //that the section needs expanding
 #![allow(unreachable_code)]
 
+extern crate proc_macro;
 extern crate rtest_impl;
 
 #[macro_use]
