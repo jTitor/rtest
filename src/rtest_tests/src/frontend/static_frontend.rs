@@ -1,22 +1,28 @@
 /*!
  * TODO
  */
+use rtest_impl::frontend::StaticFrontend;
+
 use crate::UnitTest;
 
 fn test_frontend_instance() {
-	//Get the instance.
-	unimplemented!();
-
-	//ASSERT: Instance is non-Err.
-	unimplemented!();
+	unsafe {
+		//Get the instance.
+		if let Err(e) = StaticFrontend::instance() {
+			//ASSERT: Instance is non-Err.
+			assert!(false, "StaticFrontend::instance() should return a TestLists instance, returned error {}", e);
+		}
+	}
 }
 
 fn test_frontend_mut_instance() {
-	//Get the instance.
-	unimplemented!();
-
-	//ASSERT: Instance is non-Err.
-	unimplemented!();
+	unsafe {
+		//Get the instance.
+		if let Err(e) = StaticFrontend::mut_instance() {
+			//ASSERT: Instance is non-Err.
+			assert!(false, "StaticFrontend::mut_instance() should return a TestLists instance, returned error {}", e);
+		}
+	}
 }
 
 /**
