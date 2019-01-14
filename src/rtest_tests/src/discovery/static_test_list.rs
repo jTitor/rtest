@@ -1,14 +1,18 @@
 /*!
  * TODO
  */
+use rtest_impl::discovery::StaticTestList;
+
 use crate::UnitTest;
 
 fn test_instance() {
-	//Get the instance.
-	unimplemented!();
-
-	//ASSERT: Instance is non-Err.
-	unimplemented!();
+	unsafe {
+		//Get the instance.
+		if let Err(e) = StaticTestList::instance() {
+			//ASSERT: Instance is non-Err.
+			assert!(false, "StaticTestList::instance() should return a TestLists instance, returned error {}", e);
+		}
+	}
 }
 
 /**
