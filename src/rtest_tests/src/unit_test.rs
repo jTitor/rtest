@@ -38,17 +38,18 @@ impl UnitTest {
 		match test_result {
 			Ok(_) => Ok(()),
 			Err(x) => {
-				let mut fail_reason: String = "".into();
-
 				//If it failed,
 				//try to report failure reason.
-				if let Some(fail_string) = x.downcast_ref::<String>() {
-					fail_reason = format!("{}", fail_string).into();
-				} else if let Some(fail_string) = x.downcast_ref::<&str>() {
-					fail_reason = format!("{}", fail_string).into();
-				} else {
-					fail_reason = format!("Couldn't get detailed failure string: {:?}", x).into();
-				}
+				let fail_reason: String = {
+					if let Some(fail_string) = x.downcast_ref::<String>() {
+						format!("{}", fail_string).into()
+					} else if let Some(fail_string) = x.downcast_ref::<&str>() {
+						format!("{}", fail_string).into()
+					} else {
+						format!("Couldn't get detailed failure string: {:?}", x).into()
+					}
+				};
+
 				//Report test failed?
 				Err(fail_reason)
 			}
@@ -59,10 +60,12 @@ impl UnitTest {
 /**
  * Macro that creates UnitTest instances
  * for you, given a test function name.
- * 
+ *
  * The UnitTest's name() will be whatever
  * function name you provided.
  */
 macro_rules! unit_test {
-	($test_name:ident) => { UnitTest::new(stringify!($test_name).to_string(), $test_name) };
+	($test_name:ident) => {
+		UnitTest::new(stringify!($test_name).to_string(), $test_name)
+	};
 }
