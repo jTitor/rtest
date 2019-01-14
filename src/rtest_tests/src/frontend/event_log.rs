@@ -4,14 +4,29 @@
 use crate::UnitTest;
 
 fn test_new_event_log() {
+	//ASSERT: EventLog::new()
+	//returns a new EventLog instance
 	unimplemented!();
 }
 
 fn test_subscribe() {
+	//ASSERT: Subscribing a new
+	//subscriber succeeds
+	unimplemented!();
+
+	//ASSERT: Subscribing a new
+	//subscriber succeeds (returns Ok())
+	//but doesn't add a duplicate subscriber
 	unimplemented!();
 }
 
 fn test_log_broadcast() {
+	//Create *two* TerminalViews
+	//so any logs print twice
+	unimplemented!();
+
+	//Visibility test: broadcast the message,
+	//it should appear twice
 	unimplemented!();
 }
 

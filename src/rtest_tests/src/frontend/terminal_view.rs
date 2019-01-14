@@ -4,10 +4,15 @@
 use crate::UnitTest;
 
 fn test_new_terminal_view() {
+	//ASSERT: TerminalView::new()
+	//returns a new TerminalView instance
 	unimplemented!();
 }
 
 fn test_log_terminal_view() {
+	//Visibility test: TerminalView
+	//instance prints the given message
+	//on ::log() call
 	unimplemented!();
 }
 
