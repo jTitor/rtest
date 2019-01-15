@@ -44,6 +44,8 @@ pub fn run_unit_tests() -> Result<(), ()> {
 	let mut pass_count = 0;
 	let mut fail_count = 0;
 
+	let mut failure_reasons_vec: Vec<String> = vec![];
+
 	//For each test:
 	for test in tests_vec.iter() {
 		//Run it in catch_unwind.
@@ -58,8 +60,13 @@ pub fn run_unit_tests() -> Result<(), ()> {
 			Err(fail_reason) => {
 				//If it failed, increment fail count.
 				fail_count += 1;
-				//Report test failed?
+
+				//Report test failed...
 				println!("Test {} FAILED: {}", test.name(), fail_reason);
+
+				//And add it to the list
+				//for the post-run summary.
+				failure_reasons_vec.push(format!("{}: {}", test.name(), fail_reason).into());
 			}
 		}
 	}
@@ -74,8 +81,12 @@ pub fn run_unit_tests() -> Result<(), ()> {
 
 	//If any tests failed, it's an error; else it's ok.
 	if fail_count > 0 {
+		println!("Failure details:");
+
 		//Print failure reasons again?
-		unimplemented!();
+		for failure in failure_reasons_vec {
+			println!("{}", failure);
+		}
 
 		return Err(());
 	}

@@ -7,8 +7,6 @@ mod test_lists;
 
 mod attributes;
 
-mod common_functions;
-
 use crate::UnitTest;
 /**
  * Returns all tests in this module.
