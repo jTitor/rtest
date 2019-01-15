@@ -8,6 +8,7 @@ use std::sync::{Mutex, MutexGuard, RwLock, RwLockWriteGuard};
 use dispatch::Queue;
 use failure::Error;
 
+use super::panic_handling;
 use crate::discovery::TestEntry;
 use crate::frontend::Frontend;
 use crate::test_run::runner::errors::{GetLockError, TestError};
@@ -47,7 +48,13 @@ pub fn do_test(test: fn()) -> Result<(), TestError> {
 			return Ok(());
 		}
 		Err(x) => {
-			if let Some(fail_string) = x.downcast_ref::<String>() {
+			//Try to see if we can pull panic info
+			//from panic_handling first.
+			if let Some(fail_string) = panic_handling::get_last_panic_string() {
+				return Err(TestError::TestFailed { cause: fail_string });
+			}
+			//Otherwise, pull from the panic body
+			else if let Some(fail_string) = x.downcast_ref::<String>() {
 				return Err(TestError::TestFailed {
 					cause: format!("{}", fail_string),
 				});

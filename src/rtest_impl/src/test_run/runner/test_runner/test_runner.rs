@@ -3,7 +3,7 @@
 */
 use failure::Error;
 
-use super::PrivateImpl;
+use super::{PrivateImpl, panic_handling};
 use crate::discovery::TestLists;
 use crate::frontend::Frontend;
 use crate::test_run::{RunResults, TestRunError};
@@ -14,15 +14,13 @@ use crate::test_run::{RunResults, TestRunError};
 pub struct TestRunner {}
 
 impl TestRunner {
-	pub fn new() -> TestRunner {
-		TestRunner {}
-	}
-
+	//Private functions.
 	/**
-	 * TODO
+	 * Runs the tests supplied to this TestRunner.
 	 */
-	pub fn run(
-		&mut self,	//TODO: make this non-mut
+	fn run_tests(
+		&mut self,
+		//TODO: make this non-mut
 		test_list: &TestLists,
 		frontend: &Frontend,
 	) -> Result<RunResults, TestRunError> {
@@ -56,5 +54,35 @@ impl TestRunner {
 
 		//Report test success!
 		return Ok(run_results);
+	}
+
+	//Public functions.
+	/**
+	 * Creates a new TestRunner instance.
+	 */
+	pub fn new() -> TestRunner {
+		TestRunner {}
+	}
+
+	/**
+	 * TODO
+	 */
+	pub fn run(
+		&mut self,
+		//TODO: make this non-mut
+		test_list: &TestLists,
+		frontend: &Frontend,
+	) -> Result<RunResults, TestRunError> {
+		//Attach the custom panic hook
+		//so we get full panic details.
+		panic_handling::set_hook();
+
+		//Run the tests...
+		let result = self.run_tests(test_list, frontend);
+
+		//Now detach the hook.
+		panic_handling::take_hook();
+
+		result
 	}
 }

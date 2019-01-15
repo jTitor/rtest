@@ -49,20 +49,20 @@ pub fn run_unit_tests() -> Result<(), ()> {
 	//For each test:
 	for test in tests_vec.iter() {
 		//Run it in catch_unwind.
-		println!("[rtest_tests] Running test '{}'", test.name());
+		println!("[rtest_tests] Running test: {}", test.name());
 		let test_result = test.run();
 		match test_result {
 			Ok(_) => {
 				//If it passed, increment pass count.
 				pass_count += 1;
-				println!("[rtest_tests] Test {} passed", test.name());
+				println!("[rtest_tests] Test passed: {}", test.name());
 			}
 			Err(fail_reason) => {
 				//If it failed, increment fail count.
 				fail_count += 1;
 
 				//Report test failed...
-				println!("[rtest_tests] Test {} FAILED: {}", test.name(), fail_reason);
+				println!("[rtest_tests] Test FAILED: {}. Reason: {}", test.name(), fail_reason);
 
 				//And add it to the list
 				//for the post-run summary.
