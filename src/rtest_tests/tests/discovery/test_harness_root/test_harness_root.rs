@@ -1,5 +1,5 @@
 /*!
- * TODO
+ * Defines unit tests for rtest_impl::discovery::test_harness_root.
  */
 use crate::UnitTest;
 

@@ -20,7 +20,7 @@ extern crate quote;
 
 //Define our base level modules.
 pub mod discovery;
-pub use self::discovery::{do_attribute_ignore, do_attribute_test};
+pub use self::discovery::do_test_harness_root;
 
 pub mod frontend;
 pub mod test_run;
