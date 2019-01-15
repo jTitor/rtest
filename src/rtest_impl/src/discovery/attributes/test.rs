@@ -11,7 +11,10 @@ use crate::discovery::attributes::common;
 use crate::discovery::rls_common;
 
 /**
- * TODO
+ * TODO: We probably actually
+ * *remove* this, since our generators
+ * in ::discovery::test_harness_root handle
+ * function discovery and codegen
  */
 pub fn do_attribute_test(attr: &TokenStream, item: &TokenStream) {
 	let attribute_name: String = "test".into();

@@ -60,4 +60,9 @@ pub fn debug_warn_test_add_failed(test_name: &str, error_message: &str) {
  */
 pub fn extract_test_entry(item: &TokenStream) -> TestEntry {
 	unimplemented!();
+	let test_name = "";
+	
+	//The real question - how do we get
+	//a fn() from a TokenStream?
+	unimplemented!();
 }

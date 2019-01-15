@@ -7,6 +7,8 @@ mod test_lists;
 
 mod attributes;
 
+mod test_harness_root;
+
 use crate::UnitTest;
 /**
  * Returns all tests in this module.
@@ -16,6 +18,7 @@ pub fn all_tests() -> Vec<UnitTest> {
 
 	result.append(&mut test_lists::all_tests());
 	result.append(&mut attributes::all_tests());
+	result.append(&mut test_harness_root::all_tests());
 
 	result
 }

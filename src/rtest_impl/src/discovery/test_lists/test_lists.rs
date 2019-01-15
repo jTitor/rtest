@@ -127,8 +127,25 @@ impl TestLists {
 		test: &TestEntry,
 		list_identifier: TestListIdentifier,
 	) -> Result<(), Error> {
-		//self.get_list_mut(list_identifier).(...)
-		unimplemented!();
+		//Get indices of all instances.
+		let mut found_instance_indices: Vec<usize> = vec![];
+		{
+			let list = self.get_list(list_identifier);
+			for i in 0..list.len() {
+				if list[i] == *test {
+					//Add indices to the front
+					//so when we call remove()
+					//it doesn't disturb indices of
+					//any other instances we found
+					found_instance_indices.insert(i, 0);
+				}
+			}
+		}
+
+		//Now actually remove the instances...
+		for index in found_instance_indices {
+			self.get_list_mut(list_identifier).remove(index);
+		}
 
 		Ok(())
 	}
@@ -180,9 +197,7 @@ impl TestLists {
 		}
 
 		//Add the test
-		//self.get_list_mut(list_identifier).(...)
-		//presumably you add a clone here
-		unimplemented!();
+		self.get_list_mut(list_identifier).push(test.clone());
 
 		//DEBUG ASSERT: test really was added
 		self.verify_list_append(&test, list_identifier)?;

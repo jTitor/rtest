@@ -10,7 +10,10 @@ use super::common;
 use super::super::{StaticTestList, StaticTestListError, TestLists};
 
 /**
- * TODO
+ * TODO: We probably actually
+ * *remove* this, since our generators
+ * in ::discovery::test_harness_root handle
+ * function discovery and codegen
  */
 pub fn do_attribute_ignore(_attr: &TokenStream, item: &TokenStream) {
 	let attribute_name: String = "ignore".into();
