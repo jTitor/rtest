@@ -8,3 +8,15 @@ workspace = "../../"
 [dependencies]
 quote = {version = "*"}
 rtest_impl = { path = "../rtest_impl", version = "*" }
+
+[[test]]
+#Path to the root file for the unit tests.
+#As with [[bin]]/[[lib]] assuming CWD prefix is "./src",
+#this assumes CWD prefix is "./tests".
+name = "lib"
+#This disables the standard Rust test harness,
+#and instead builds the test crate as a binary.
+#Unclear if Cargo will still run the resulting binary
+#when ```cargo test``` is invoked, but exit code 0
+#indicates success and exit code 1 failure.
+harness = false
