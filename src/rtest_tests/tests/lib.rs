@@ -93,3 +93,15 @@ pub fn run_unit_tests() -> Result<(), ()> {
 
 	Ok(())
 }
+
+/**
+ * Entry point for the test harness.
+ */
+fn main() {
+	//Run the unit tests; return 1 if any fail,
+	//0 if all pass
+	::std::process::exit(match run_unit_tests() {
+		Ok(_) => 0,
+		_ => 1,
+	});
+}
