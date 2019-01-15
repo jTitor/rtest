@@ -1,19 +1,22 @@
 /*!
  * TODO
  */
+use rtest_impl::frontend::TerminalView;
+
 use crate::UnitTest;
 
 fn test_new_terminal_view() {
 	//ASSERT: TerminalView::new()
 	//returns a new TerminalView instance
-	unimplemented!();
+	let _ = TerminalView::new();
 }
 
 fn test_log_terminal_view() {
 	//Visibility test: TerminalView
 	//instance prints the given message
 	//on ::log() call
-	unimplemented!();
+	println!("Running TerminalView::log(); you should see a message below.");
+	TerminalView::new().log("Test message!");
 }
 
 /**
