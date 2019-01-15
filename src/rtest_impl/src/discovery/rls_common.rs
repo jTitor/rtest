@@ -20,3 +20,12 @@ pub fn post_rls_warning<T: fmt::Display>(text: &T) {
 	//Report to RLS...
 	unimplemented!();
 }
+
+/**
+ * Posts the given displayable item
+ * as an RLS debug warning.
+ */
+pub fn post_rls_debug_warning<T: fmt::Display>(text: &T) {
+	//Report to RLS...
+	unimplemented!();
+}

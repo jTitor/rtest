@@ -5,9 +5,7 @@
 /**
  * Prints event data of an EventLog to standard output.
  */
-pub struct TerminalView {
-
-}
+pub struct TerminalView {}
 
 impl TerminalView {
 	/**
@@ -17,8 +15,11 @@ impl TerminalView {
 		TerminalView {}
 	}
 
+	/**
+	 * Prints the given message
+	 * to standard output.
+	 */
 	pub fn log(&self, text: &str) {
 		println!("{}", text);
-		unimplemented!();
 	}
 }

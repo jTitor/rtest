@@ -47,7 +47,7 @@ impl TestRunner {
 
 		if let Err(x) = test_results {
 			//Report that the run failed
-			unimplemented!();
+			frontend.log("Tests failed!");
 			return Err(TestRunError::TestRunError {
 				cause: x,
 				run_results: run_results,
