@@ -16,6 +16,13 @@ use crate::test_run::FailureDetail;
 use crate::test_run::{RunResults, TestRunner};
 
 pub trait PrivateImpl {
+	/**
+	 * Runs all ignored tests
+	 * (that is, marks all ignored tests as skipped).
+	 *
+	 * Returns an Err(Error) only if a test
+	 * can't be marked as skipped somehow.
+	 */
 	fn handle_ignored_tests(
 		&mut self,
 		test_list: &TestLists,
@@ -23,6 +30,12 @@ pub trait PrivateImpl {
 		run_results: &mut RunResults,
 	) -> Result<(), Error>;
 
+	/**
+	 * Runs all non-main-thread tests.
+	 *
+	 * Returns Ok() if all tests were run,
+	 * regardless of if a test failed.
+	 */
 	fn run_parallel_tests(
 		&mut self,
 		test_list: &TestLists,
@@ -30,6 +43,12 @@ pub trait PrivateImpl {
 		run_results: &mut RunResults,
 	) -> Result<(), Error>;
 
+	/**
+	 * Runs all main-thread tests.
+	 *
+	 * Returns Ok() if all tests were run,
+	 * regardless of if a test failed.
+	 */
 	fn run_main_tests(
 		&mut self,
 		test_list: &TestLists,
@@ -39,9 +58,6 @@ pub trait PrivateImpl {
 }
 
 impl PrivateImpl for TestRunner {
-	/**
-	 * TODO
-	 */
 	fn handle_ignored_tests(
 		&mut self,
 		test_list: &TestLists,
@@ -59,9 +75,6 @@ impl PrivateImpl for TestRunner {
 		Ok(())
 	}
 
-	/**
-	 * TODO
-	 */
 	fn run_parallel_tests(
 		&mut self,
 		test_list: &TestLists,
@@ -90,9 +103,6 @@ impl PrivateImpl for TestRunner {
 		Ok(())
 	}
 
-	/**
-	 * TODO
-	 */
 	fn run_main_tests(
 		&mut self,
 		test_list: &TestLists,

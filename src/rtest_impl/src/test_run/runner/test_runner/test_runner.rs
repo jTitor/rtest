@@ -22,7 +22,7 @@ impl TestRunner {
 	 * TODO
 	 */
 	pub fn run(
-		&mut self,
+		&mut self,	//TODO: make this non-mut
 		test_list: &TestLists,
 		frontend: &Frontend,
 	) -> Result<RunResults, TestRunError> {
@@ -30,6 +30,9 @@ impl TestRunner {
 
 		//Run the tests.
 		//The order of this may change.
+		//TODO: This early aborts
+		//if any tests fails???
+		//That doesn't sound right
 		let test_results: Result<(), Error> = {
 			if let Err(x) = self.handle_ignored_tests(&test_list, frontend, &mut run_results) {
 				Err(x)
