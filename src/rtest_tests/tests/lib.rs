@@ -72,12 +72,19 @@ pub fn run_unit_tests() -> Result<(), ()> {
 	}
 
 	//Print out pass/fail count.
+	let divider_line = "------------------------";
+	println!("\n{}", divider_line);
+	println!("Test run complete.");
+	if fail_count > 0 {
+		println!("Some tests failed!");
+	}
 	println!(
 		"{} tests run: {} tests passed, {} tests failed",
 		pass_count + fail_count,
 		pass_count,
 		fail_count
 	);
+	println!("{}", divider_line);
 
 	//If any tests failed, it's an error; else it's ok.
 	if fail_count > 0 {
@@ -85,7 +92,7 @@ pub fn run_unit_tests() -> Result<(), ()> {
 
 		//Print failure reasons again?
 		for failure in failure_reasons_vec {
-			println!("{}", failure);
+			println!("\t{}", failure);
 		}
 
 		return Err(());

@@ -122,7 +122,7 @@ fn test_modify_lists() {
 	let expected_parallel_len = parallel_tests_to_add.len();
 	actual_len = lists.tests().len();
 	assert!(
-		actual_len == expected_parallel_len + 1,
+		actual_len == expected_parallel_len,
 		"New TestLists instance should have {} parallel test(s), has {}",
 		expected_parallel_len,
 		actual_len
@@ -131,7 +131,7 @@ fn test_modify_lists() {
 	let expected_ignored_len = ignored_tests_to_add.len();
 	actual_len = lists.ignored_tests().len();
 	assert!(
-		actual_len == expected_ignored_len + 1,
+		actual_len == expected_ignored_len,
 		"New TestLists instance should have {} ignored test(s), has {}",
 		expected_ignored_len,
 		actual_len

@@ -27,9 +27,10 @@ use proc_macro::TokenStream;
  */
 #[proc_macro_attribute]
 pub fn init_rtest(attr: TokenStream, item: TokenStream) -> TokenStream {
+	//Apply the codegen...
 	let expanded = rtest_impl::do_test_harness_root(attr, item);
-	
-	//Return the input elements as-is.
+
+	//And return the augmented code	
 	expanded
 }
 
