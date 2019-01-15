@@ -15,6 +15,8 @@ pub enum TestRunnerError {
 	JobUnexpected { cause: Error },
 	#[fail(display = "Failed to evaluate all main-thread tests {}", cause)]
 	FailedAtMainThreadStage { cause: Error },
+	#[fail(display = "Unknown failure")]
+	UnknownError,
 }
 
 #[derive(Debug, Fail)]
@@ -25,7 +27,7 @@ pub enum GetLockError {
 
 #[derive(Debug, Fail)]
 pub enum TestError {
-	#[fail(display = "Test failed: {}", cause)]
+	#[fail(display = "{}", cause)]
 	TestFailed { cause: String },
 	#[fail(display = "Test not run")]
 	TestNotRun,

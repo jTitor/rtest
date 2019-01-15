@@ -1,15 +1,15 @@
 /*!
  * TODO
 */
-use std::thread::Thread;
 use std::panic;
 use std::sync::{Mutex, MutexGuard, RwLock, RwLockWriteGuard};
 
-use failure::Error;
 #[cfg(macos)]
 use dispatch::Queue;
+use failure::Error;
 
-use crate::frontend::{Frontend, StaticFrontend, StaticFrontendInstance};
+use crate::discovery::TestEntry;
+use crate::frontend::Frontend;
 use crate::test_run::runner::errors::{GetLockError, TestError};
 use crate::test_run::{FailureDetail, RunResults};
 
@@ -75,13 +75,13 @@ pub fn do_test(test: fn()) -> Result<(), TestError> {
 pub fn parallel_job(
 	run_results_lock: &RwLock<&mut RunResults>,
 	frontend_mutex: &Mutex<&Frontend>,
-	test: fn(),
+	test: &TestEntry,
 ) -> Result<(), Error> {
 	//Report that the test is starting to frontend.
-	get_mutex_lock(frontend_mutex)?.log(&format!("Starting test: {:?}", test));
+	get_mutex_lock(frontend_mutex)?.log(&format!("Starting test: {}", test));
 
 	//Run the test.
-	let test_result = do_test(test);
+	let test_result = do_test(test.test);
 
 	//Handle pass/fail...
 	match test_result {
@@ -89,7 +89,7 @@ pub fn parallel_job(
 			//	Increment pass counter (?) accordingly.
 			get_write_lock(run_results_lock)?.add_pass();
 			//Report to frontend.
-			get_mutex_lock(frontend_mutex)?.log(&format!("Test passed: {:?}", test));
+			get_mutex_lock(frontend_mutex)?.log(&format!("Test passed: {}", test));
 		}
 		Err(x) => {
 			let error_string: String = format!("{}", x).to_string();
@@ -101,14 +101,17 @@ pub fn parallel_job(
 			));
 			//Report to frontend.
 			get_mutex_lock(frontend_mutex)?
-				.log(&format!("Test {:?} failed: {}", test, error_string));
+				.log(&format!("Test failed: {}. Reason: {}", test, error_string));
 		}
 	}
 
 	Ok(())
 }
 
-fn run_on_main_thread(function: fn(fn()) -> Result<(), TestError>, test_function: fn()) -> Result<(), TestError> {
+fn run_on_main_thread(
+	function: fn(fn()) -> Result<(), TestError>,
+	test_function: fn(),
+) -> Result<(), TestError> {
 	//Depends on OS.
 
 	//If on macOS, use GCD.

@@ -181,22 +181,22 @@ fn test_runner_result() {
 	//ASSERT: runner returns Err() when
 	//any test fails.
 	let test_some_fail = make_test_list_some_fail();
-	if let Ok(x) = runner.run(&test_some_fail, &frontend) {
+	if let Err(e) = runner.run(&test_some_fail, &frontend) {
 		assert!(
 			false,
-			"Runner is supposed to return Err() when any test fails, returned Ok instead: {}",
-			x
+			"Runner is supposed to return Ok() if all tests were run even if when any test fails, returned Err() instead: {}",
+			e
 		);
 	}
 
 	//ASSERT: runner returns Err() when
 	//all tests fail.
 	let test_all_fail = make_test_list_all_fail();
-	if let Ok(x) = runner.run(&test_all_fail, &frontend) {
+	if let Err(e) = runner.run(&test_all_fail, &frontend) {
 		assert!(
 			false,
-			"Runner is supposed to return Err() when all tests fail, returned Ok instead: {}",
-			x
+			"Runner is supposed to return Ok() if all tests were run even if all tests fail, returned Err() instead: {}",
+			e
 		);
 	}
 }

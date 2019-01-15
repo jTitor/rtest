@@ -1,8 +1,6 @@
 /*!
  * Private implementation details of TestRunner.
 */
-use std::cmp;
-use std::panic;
 use std::sync::{Mutex, RwLock};
 
 use failure::Error;
@@ -91,16 +89,28 @@ impl PrivateImpl for TestRunner {
 		//Any test failures will have already been added
 		//to run_results, so drop the result collection
 		//we get from the tests
-		let _ = test_list
+		let tests_run = test_list
 			.tests()
 			.par_iter()
 			.map(|test_entry| {
 				//Actually run the test.
-				parallel_job(&run_result_lock, &frontend_mutex, test_entry.test)
+				parallel_job(&run_result_lock, &frontend_mutex, test_entry)
 			})
-			.collect::<Result<(), Error>>();
+			.collect::<Vec<Result<(), Error>>>();
 
-		Ok(())
+		let result = {
+			if tests_run.len() != test_list.tests().len() {
+				//All tests must be run or we have an internal error.
+				Err(TestRunnerError::FailedAtParallelStage {
+					cause: TestRunnerError::UnknownError.into(),
+				}
+				.into())
+			} else {
+				Ok(())
+			}
+		};
+
+		result
 	}
 
 	fn run_main_tests(
@@ -129,16 +139,12 @@ impl PrivateImpl for TestRunner {
 				run_results.add_failure(failure_detail);
 
 				//Report to frontend.
-				frontend.log(&format!("Test failed: {:?}", test));
-			}
-
-			//Otherwise, report a pass
-			let test_passed = false;
-			if test_passed {
+				frontend.log(&format!("Test failed: {}. Reason: {}", test, test_error));
+			} else {
 				//	Increment pass counter (?) accordingly.
 				run_results.add_pass();
 				//Report to frontend.
-				frontend.log(&format!("Test passed: {:?}", test));
+				frontend.log(&format!("Test passed: {}", test));
 			}
 		}
 
