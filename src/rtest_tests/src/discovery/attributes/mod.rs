@@ -7,6 +7,8 @@ mod ignore;
 
 mod test;
 
+mod example_functions;
+
 use crate::UnitTest;
 /**
  * Returns all tests in this module.

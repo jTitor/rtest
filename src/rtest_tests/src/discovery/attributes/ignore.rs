@@ -1,16 +1,29 @@
 /*!
  * TODO
  */
-use rtest_impl::discovery::TestLists;
+use rtest_impl::discovery::{TestEntry, TestLists};
 
 use crate::UnitTest;
+use super::example_functions;
+use super::super::common_functions;
+
 
 fn setup_test_lists() -> TestLists {
+	let mut result = TestLists::new();
 	//Add main and parallel functions.
+	// result.add_main_test(TestEntry {
+	// 	name: "main_fn_1",
+	// 	test:
+	// });
 	unimplemented!();
-	unimplemented!();
+
+	result
 }
 
+//TODO: Is it actually possible to run these tests?
+//These take TokenStreams
+//but must somehow get fn() pointers from the
+//TokenStream to create their TestEntry
 fn test_ignore_new_function() {
 	let test_lists = setup_test_lists();
 
@@ -31,6 +44,7 @@ fn test_ignore_new_function() {
 	unimplemented!();
 	//ASSERT: The parallel list's content is unchanged.
 	unimplemented!();
+
 	//ASSERT: Ignoring the function again succeeds.
 	unimplemented!();
 	//ASSERT: All lists are unchanged.
@@ -61,6 +75,7 @@ fn test_ignore_main_function() {
 	unimplemented!();
 	//ASSERT: The parallel list's content is unchanged.
 	unimplemented!();
+
 	//ASSERT: Ignoring the function again succeeds.
 	unimplemented!();
 	//ASSERT: All lists are unchanged.
@@ -88,6 +103,8 @@ fn test_ignore_parallel_function() {
 	//ASSERT: The main list does not contain the ignored function.
 	unimplemented!();
 	//ASSERT: The main list's content is unchanged.
+	unimplemented!();
+
 	//ASSERT: Ignoring the function again succeeds.
 	unimplemented!();
 	//ASSERT: All lists are unchanged.
@@ -103,6 +120,7 @@ fn test_adding_ignored_function() {
 	unimplemented!();
 	//ASSERT: All of the test lists are unchanged.
 	unimplemented!();
+
 	//ASSERT: Adding a main function already in
 	//ignored_tests() fails with Err.
 	unimplemented!();

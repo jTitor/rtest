@@ -1,6 +1,7 @@
 /*!
  * Defines the FailureDetail struct.
 */
+use std::fmt;
 
 /**
  * Provides information as to how a given test failed.
@@ -56,5 +57,11 @@ impl FailureDetail {
 			failure_backtrace: Default::default(),
 			failure_reason: failure_raw_string.to_string(),
 		}
+	}
+}
+
+impl fmt::Display for FailureDetail {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "Test '{}' failed at {}:{}. Reason: '{}'. Backtrace: {}", self.test_name, self.failure_file, self.failure_line, self.failure_reason, self.failure_backtrace)
 	}
 }

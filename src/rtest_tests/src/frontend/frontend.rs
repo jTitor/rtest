@@ -1,18 +1,21 @@
 /*!
  * TODO
  */
+use rtest_impl::frontend::Frontend;
+
 use crate::UnitTest;
 
 fn test_new_frontend() {
 	//ASSERT: Frontend::new()
 	//returns a Frontend instance
-	unimplemented!();
+	let _ = Frontend::new();
 }
 
 fn test_frontend_log() {
 	//Display test: Frontend::log()
 	//should display the given message
-	unimplemented!();
+	println!("Running Frontend::log(); you should see a message below.");
+	Frontend::new().log("Test message!");
 }
 
 /**

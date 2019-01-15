@@ -7,23 +7,61 @@ use rtest_impl::discovery;
 use crate::UnitTest;
 
 fn sample_function() -> TokenStream {
-	unimplemented!()
+	let expanded = quote! {
+		fn example_fn() {
+			let mut x = 0;
+			x = x + 1;
+		}
+	};
+
+	expanded.into()
 }
 
 fn sample_struct() -> TokenStream {
-	unimplemented!()
+	let expanded = quote! {
+		pub struct ExampleStruct {
+			a: i32,
+		}
+	};
+
+	expanded.into()
 }
 
 fn sample_struct_with_method() -> TokenStream {
-	unimplemented!()
+	let expanded = quote! {
+		pub struct ExampleStruct {
+			a: i32,
+		}
+
+		impl ExampleStruct {
+			pub fn example_public_method(&self) -> i32 {
+				self.a
+			}
+
+			fn example_private_method(&self) {
+				let mut x = 0;
+				x = x + 1;
+			}
+		}
+	};
+
+	expanded.into()
 }
 
 fn sample_type() -> TokenStream {
-	unimplemented!()
+	let expanded = quote! {
+		type ExampleType = i32;
+	};
+
+	expanded.into()
 }
 
 fn sample_garbage() -> TokenStream {
-	unimplemented!()
+	let expanded = quote! {
+		dcsdioji
+	};
+
+	expanded.into()
 }
 
 const TEST_ATTRIBUTE_NAME: &'static str = "random_attribute_name";
@@ -33,24 +71,44 @@ fn test_is_function() {
 	//ASSERT: is_function evaluates sample function
 	//as true
 	let mut desired_result = true;
-	assert!(discovery::is_function(&sample_function()) == desired_result, "discovery::is_function() didn't evaluate function TokenStream as {}", desired_result);
+	assert!(
+		discovery::is_function(&sample_function()) == desired_result,
+		"discovery::is_function() didn't evaluate function TokenStream as {}",
+		desired_result
+	);
 
 	//ASSERT: is_function evaluates sample struct
 	//as false
 	desired_result = false;
-	assert!(discovery::is_function(&sample_struct()) == desired_result, "discovery::is_function() didn't evaluate struct TokenStream as {}", desired_result);
+	assert!(
+		discovery::is_function(&sample_struct()) == desired_result,
+		"discovery::is_function() didn't evaluate struct TokenStream as {}",
+		desired_result
+	);
 
 	//ASSERT: is_function evaluates sample struct
 	//with method in impl as false
-	assert!(discovery::is_function(&sample_struct_with_method()) == desired_result, "discovery::is_function() didn't evaluate struct TokenStream with method tokens as {}", desired_result);
+	assert!(
+		discovery::is_function(&sample_struct_with_method()) == desired_result,
+		"discovery::is_function() didn't evaluate struct TokenStream with method tokens as {}",
+		desired_result
+	);
 
 	//ASSERT: is_function evaluates sample type
 	//as false
-	assert!(discovery::is_function(&sample_type()) == desired_result, "discovery::is_function() didn't evaluate type TokenStream as {}", desired_result);
+	assert!(
+		discovery::is_function(&sample_type()) == desired_result,
+		"discovery::is_function() didn't evaluate type TokenStream as {}",
+		desired_result
+	);
 
 	//ASSERT: is_function evaluates sample garbage
 	//as false
-	assert!(discovery::is_function(&sample_garbage()) == desired_result, "discovery::is_function() didn't evaluate garbage TokenStream as {}", desired_result);
+	assert!(
+		discovery::is_function(&sample_garbage()) == desired_result,
+		"discovery::is_function() didn't evaluate garbage TokenStream as {}",
+		desired_result
+	);
 }
 
 fn test_warn_not_function() {

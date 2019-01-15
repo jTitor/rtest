@@ -1,10 +1,11 @@
 /*!
  * TODO
  */
-use crate::UnitTest;
-
 use rtest_impl;
 use rtest_impl::discovery::TestEntry;
+
+use crate::UnitTest;
+use super::common_functions::*;
 
 /**
  * Tests that the default instantiation of
@@ -39,19 +40,6 @@ fn test_new() {
 		expected_len,
 		actual_len
 	);
-}
-
-/**
- * Dummy function that does nothing,
- * to fill out the TestEntry instances in test_modify_lists().
- */
-fn dummy_fn() {}
-
-fn test_entry_named(name: &str) -> TestEntry {
-	TestEntry {
-		name: name.into(),
-		test: dummy_fn,
-	}
 }
 
 fn test_modify_lists() {

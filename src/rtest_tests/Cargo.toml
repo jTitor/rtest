@@ -6,4 +6,5 @@ edition = "2018"
 workspace = "../../"
 
 [dependencies]
+quote = {version = "*"}
 rtest_impl = { path = "../rtest_impl", version = "*" }

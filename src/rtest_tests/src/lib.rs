@@ -11,6 +11,9 @@ extern crate proc_macro;
 extern crate rtest_impl;
 
 #[macro_use]
+extern crate quote;
+
+#[macro_use]
 mod unit_test;
 
 mod discovery;
