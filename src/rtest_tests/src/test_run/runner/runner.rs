@@ -1,11 +1,19 @@
 /*!
  * TODO
  */
-use rtest_impl::discovery::TestLists;
+use rtest_impl::discovery::{TestEntry, TestLists};
 use rtest_impl::frontend::Frontend;
 use rtest_impl::test_run::TestRunner;
 
+use crate::common_functions::test_entry_named;
 use crate::UnitTest;
+
+/**
+ * A function that will fail a test.
+ */
+fn fail_fn() {
+	assert!(false, "intentionally failing for fail_fn()");
+}
 
 //Test list initializers.
 /**
@@ -13,7 +21,11 @@ use crate::UnitTest;
  * all tests pass.
  */
 fn make_test_list_all_pass() -> TestLists {
-	unimplemented!();
+	let mut result = TestLists::new();
+	let _ = result.add_main_test(test_entry_named("mt1"));
+	let _ = result.add_test(test_entry_named("pt1"));
+	
+	result
 }
 
 /**
@@ -21,7 +33,10 @@ fn make_test_list_all_pass() -> TestLists {
  * all tests are skipped.
  */
 fn make_test_list_all_skip() -> TestLists {
-	unimplemented!();
+	let mut result = TestLists::new();
+	let _ = result.ignore_test(test_entry_named("it1"));
+	
+	result
 }
 
 /**
@@ -29,7 +44,20 @@ fn make_test_list_all_skip() -> TestLists {
  * all tests fail.
  */
 fn make_test_list_all_fail() -> TestLists {
-	unimplemented!();
+	let mut result = TestLists::new();
+	let fail_test = TestEntry {
+		name: "fp1".into(),
+		test: fail_fn
+	};
+	let fail_main_test = TestEntry {
+		name: "fm1".into(),
+		test: fail_fn
+	};
+
+	let _ = result.add_main_test(fail_main_test);
+	let _ = result.add_test(fail_test);
+	
+	result
 }
 
 /**
@@ -38,7 +66,25 @@ fn make_test_list_all_fail() -> TestLists {
  * Some tests are also skipped.
  */
 fn make_test_list_some_fail() -> TestLists {
-	unimplemented!();
+	let mut result = TestLists::new();
+	let fail_test = TestEntry {
+		name: "fp1".into(),
+		test: fail_fn
+	};
+	
+	//3 tests should pass
+	let _ = result.add_test(test_entry_named("pt1"));
+	let _ = result.add_main_test(test_entry_named("mt1"));
+	let _ = result.add_test(test_entry_named("pt2"));
+
+	//2 tests should skip
+	let _ = result.ignore_test(test_entry_named("it1"));
+	let _ = result.ignore_test(test_entry_named("it2"));
+
+	//1 test should fail
+	let _ = result.add_test(fail_test);
+
+	result
 }
 
 //Unit tests.

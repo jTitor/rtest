@@ -16,6 +16,7 @@ extern crate quote;
 #[macro_use]
 mod unit_test;
 
+mod common_functions;
 mod discovery;
 mod frontend;
 mod test_run;

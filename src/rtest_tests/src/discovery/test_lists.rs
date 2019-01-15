@@ -5,7 +5,7 @@ use rtest_impl;
 use rtest_impl::discovery::TestEntry;
 
 use crate::UnitTest;
-use super::common_functions::*;
+use crate::common_functions::*;
 
 /**
  * Tests that the default instantiation of

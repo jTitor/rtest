@@ -18,6 +18,8 @@ fn test_subscribe() {
 
 	//ASSERT: Subscribing a new
 	//subscriber succeeds
+	//TODO: EventLog::subscribe()
+	//doesn't return a Result
 	unimplemented!();
 	event_log.subscribe(terminal_view.clone());
 
@@ -25,6 +27,8 @@ fn test_subscribe() {
 	//subscriber succeeds (returns Ok())
 	//but doesn't add a duplicate subscriber
 	event_log.subscribe(terminal_view.clone());
+	//TODO: EventLog
+	//doesn't expose a way to count its subscribers
 	unimplemented!();
 }
 

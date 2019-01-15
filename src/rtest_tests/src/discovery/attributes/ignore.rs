@@ -5,7 +5,7 @@ use rtest_impl::discovery::{TestEntry, TestLists};
 
 use crate::UnitTest;
 use super::example_functions;
-use super::super::common_functions;
+use crate::common_functions;
 
 
 fn setup_test_lists() -> TestLists {
