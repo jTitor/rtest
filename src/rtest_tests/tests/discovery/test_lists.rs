@@ -2,7 +2,6 @@
  * TODO
  */
 use rtest_impl;
-use rtest_impl::discovery::TestAddError;
 use rtest_impl::discovery::TestEntry;
 
 use crate::common_functions::*;

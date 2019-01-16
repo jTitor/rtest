@@ -11,13 +11,13 @@ use crate::discovery::TestLists;
 pub struct Runner {}
 
 impl Runner {
-	pub new() -> Runner { Runner{} }
+	pub fn new() -> Runner { Runner{} }
 
 	/**
 	 * Runs the given test list.
 	 */
-	pub run(tests: TestLists) -> Result<(), ()> {
-		let test_runner = TestRunner::new();
+	pub fn run(tests: TestLists) -> Result<(), ()> {
+		let mut test_runner = TestRunner::new();
 		let frontend = Frontend::new();
 
 		//Actually run the tests here...

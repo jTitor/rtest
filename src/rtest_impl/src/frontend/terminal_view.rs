@@ -5,6 +5,7 @@
 /**
  * Prints event data of an EventLog to standard output.
  */
+#[derive(Eq, PartialEq, Clone, Debug)]
 pub struct TerminalView {}
 
 impl TerminalView {

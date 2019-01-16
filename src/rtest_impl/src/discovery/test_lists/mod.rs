@@ -2,7 +2,6 @@
  * Defines the test_lists module.
 */
 mod errors;
-pub use self::errors::TestAddError;
 
 mod common;
 

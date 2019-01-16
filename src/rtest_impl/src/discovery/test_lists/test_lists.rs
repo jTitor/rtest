@@ -3,9 +3,10 @@
  */
 use failure::Error;
 
-use super::errors::{TestAddError, TestListIdentifier};
-use crate::discovery::TestEntry;
+use super::errors::{TestListIdentifier, list_element_name};
 use crate::discovery::rls_common;
+use crate::discovery::TestEntry;
+use crate::errors::ElementAddError;
 
 /**
  * Contains all of the tests marked by the #[test] and #[ignore] tags.
@@ -76,8 +77,9 @@ impl TestLists {
 		list_identifier: TestListIdentifier,
 	) -> Result<(), Error> {
 		if !self.is_in_list(test, list_identifier) {
-			let error = TestAddError::ListAppendFailed {
-				list: list_identifier,
+			let error = ElementAddError::ListAppendFailed {
+				element_type: list_element_name(),
+				list_name: format!("{}", list_identifier)
 			};
 
 			debug_assert!(false, "Test {} is not in {} list", test, list_identifier);
@@ -106,8 +108,9 @@ impl TestLists {
 			//	Report error, and return here.
 			//	(This is probably being called during macro execution,
 			//	so we don't want to halt all other macros)
-			let error = TestAddError::TestAlreadyInList {
-				list: list_identifier,
+			let error = ElementAddError::AlreadyInList {
+				element_type: list_element_name(),
+				list_name: format!("{}", list_identifier)
 			};
 			//Report to RLS...
 			rls_common::post_rls_error(&error);
@@ -164,10 +167,11 @@ impl TestLists {
 		&self,
 		test: &TestEntry,
 		list_identifier: TestListIdentifier,
-	) -> Result<(), Error>{
+	) -> Result<(), Error> {
 		if self.is_in_list(test, list_identifier) {
-			let error = TestAddError::ListRemoveFailed {
-				list: list_identifier,
+			let error = ElementAddError::ListRemoveFailed {
+				element_type: list_element_name(),
+				list_name: format!("{}", list_identifier)
 			};
 
 			debug_assert!(
@@ -196,14 +200,15 @@ impl TestLists {
 		&mut self,
 		test: TestEntry,
 		list_identifier: TestListIdentifier,
-	) -> Result<TestAddError, Error> {
+	) -> Result<ElementAddError, Error> {
 		//Is this already in the desired list?
 		if self.is_in_list(&test, list_identifier) {
 			//If so:
 			//	Early out and report the
 			//test's already in the desired list.
-			return Ok(TestAddError::TestAlreadyInList {
-				list: list_identifier,
+			return Ok(ElementAddError::AlreadyInList {
+				element_type: list_element_name(),
+				list_name: format!("{}", list_identifier)
 			});
 		}
 
@@ -213,7 +218,7 @@ impl TestLists {
 		//DEBUG ASSERT: test really was added
 		self.verify_list_append(&test, list_identifier)?;
 
-		Ok(TestAddError::Success)
+		Ok(ElementAddError::Success { element_type: list_element_name() })
 	}
 
 	/**
@@ -243,7 +248,7 @@ impl TestLists {
 	 * Returns Ok if the test could be added to the list or was already in the list,
 	 * and Err otherwise.
 	 */
-	pub fn add_main_test(&mut self, main_test: TestEntry) -> Result<TestAddError, Error> {
+	pub fn add_main_test(&mut self, main_test: TestEntry) -> Result<ElementAddError, Error> {
 		//Sanity check: Is this already in parallel_tests?
 		//Early out if so
 		self.verify_not_in_list(&main_test, TestListIdentifier::ParallelList)?;
@@ -267,7 +272,7 @@ impl TestLists {
 	 * Returns Ok if the test could be added to the list or was already in the list,
 	 * and Err otherwise.
 	 */
-	pub fn add_test(&mut self, test: TestEntry) -> Result<TestAddError, Error> {
+	pub fn add_test(&mut self, test: TestEntry) -> Result<ElementAddError, Error> {
 		//Sanity check: Is this already in main_tests?
 		//Early out if so
 		self.verify_not_in_list(&test, TestListIdentifier::MainList)?;
@@ -291,7 +296,7 @@ impl TestLists {
 	 * Returns Ok if the test could be added to the ignore list or was already in the list,
 	 * and Err otherwise.
 	 */
-	pub fn ignore_test(&mut self, test: TestEntry) -> Result<TestAddError, Error> {
+	pub fn ignore_test(&mut self, test: TestEntry) -> Result<ElementAddError, Error> {
 		//Remove test from main_tests and parallel_tests,
 		//if it exists in either list.
 		self.remove_from_list(&test, TestListIdentifier::MainList)?;
@@ -332,7 +337,11 @@ impl TestLists {
 	 * Generates a TestList
 	 * from the given lists of TestEntries.
 	 */
-	 pub fn from_test_entries(parallel_tests: &Vec<TestEntry>, main_tests: &Vec<TestEntry>, ignored_tests: &Vec<TestEntry>) -> Result<TestLists, Error> {
+	pub fn from_test_entries(
+		parallel_tests: &Vec<TestEntry>,
+		main_tests: &Vec<TestEntry>,
+		ignored_tests: &Vec<TestEntry>,
+	) -> Result<TestLists, Error> {
 		let mut result = TestLists::new();
 
 		for test in parallel_tests {

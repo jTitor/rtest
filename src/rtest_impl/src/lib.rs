@@ -24,7 +24,9 @@ extern crate rtest_tool_macros;
 pub mod discovery;
 pub use self::discovery::do_test_harness_root;
 
+pub mod errors;
 pub mod frontend;
+pub mod runner;
 pub mod test_run;
 
 pub use self::test_run::TestRunner;
