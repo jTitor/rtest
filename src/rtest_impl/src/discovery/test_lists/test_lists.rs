@@ -247,6 +247,8 @@ impl TestLists {
 		//Sanity check: Is this already in parallel_tests?
 		//Early out if so
 		self.verify_not_in_list(&main_test, TestListIdentifier::ParallelList)?;
+		//Similarly, early out if already in ignored_tests
+		self.verify_not_in_list(&main_test, TestListIdentifier::IgnoredList)?;
 
 		//Else, add it to the main list
 		self.add_to_list_and_verify(main_test, TestListIdentifier::MainList)
@@ -269,6 +271,8 @@ impl TestLists {
 		//Sanity check: Is this already in main_tests?
 		//Early out if so
 		self.verify_not_in_list(&test, TestListIdentifier::MainList)?;
+		//Similarly, early out if already in ignored_tests
+		self.verify_not_in_list(&test, TestListIdentifier::IgnoredList)?;
 
 		//Else, add it to the parallel list
 		self.add_to_list_and_verify(test, TestListIdentifier::ParallelList)
