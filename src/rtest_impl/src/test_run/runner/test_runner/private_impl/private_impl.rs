@@ -82,8 +82,6 @@ impl PrivateImpl for TestRunner {
 		//Setup locks for the jobs
 		let run_result_lock = RwLock::new(run_results);
 		let frontend_mutex = Mutex::new(frontend);
-		let mut any_jobs_failed = false;
-		let any_jobs_failed_lock = Mutex::new(&mut any_jobs_failed);
 
 		//Dispatch the tests in parallel...
 		//Any test failures will have already been added

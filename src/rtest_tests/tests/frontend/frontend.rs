@@ -12,10 +12,15 @@ fn test_new_frontend() {
 }
 
 fn test_frontend_log() {
-	//Display test: Frontend::log()
-	//should display the given message
-	println!("Running Frontend::log(); you should see a message below.");
-	Frontend::new().log("Test message!");
+	match Frontend::new() {
+		Err(e) => assert!(false, "Failed to initialize frontend: {}", e),
+		Ok(frontend) => {
+			//Display test: Frontend::log()
+			//should display the given message
+			println!("Running Frontend::log(); you should see a message below.");
+			frontend.log("Test message!");
+		}
+	}
 }
 
 /**

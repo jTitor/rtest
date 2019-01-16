@@ -2,15 +2,12 @@
  * Defines internal operations used by DiscoverTree
  * that use the syn library.
  */
-use std::process;
-
 use syn;
 //Rust 2018 has a bug with path names;
 //use :: prefix to temporarily fix
 use ::proc_macro;
 
 use super::{fn_properties, names};
-use crate::discovery::TestEntry;
 
 /**
  * TODO
@@ -19,7 +16,6 @@ pub fn generate_test_entry_fn_list(
 	export_list_name: String,
 	fn_name_list: &Vec<String>,
 ) -> proc_macro::TokenStream {
-	let mut test_entry_list: Vec<TestEntry> = Vec::with_capacity(fn_name_list.len());
 	let (entry_list_name, name_list_name, fn_list_name) =
 		names::list_names(export_list_name.as_str());
 

@@ -64,6 +64,7 @@ impl UnitTest {
  * The UnitTest's name() will be whatever
  * function name you provided.
  */
+#[allow(unused_macros)]
 macro_rules! unit_test {
 	($test_name:ident) => {
 		UnitTest::new(stringify!($test_name).to_string(), $test_name)

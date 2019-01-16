@@ -35,7 +35,12 @@ pub struct StaticFrontend {}
 impl StaticFrontend {
 	unsafe fn init_instance() {
 		if let None = FRONTEND {
-			FRONTEND = Some(RwLock::new(Frontend::new()));
+			let frontend_result = Frontend::new();
+			if let Ok(frontend) = frontend_result {
+			FRONTEND = Some(RwLock::new(frontend));}
+			else if let Err(e) = frontend_result {
+				debug_assert!(false, "failed to initialize frontend: {}", e);
+			}
 		}
 
 		if let None = FRONTEND {

@@ -51,7 +51,7 @@ impl EventLog {
 		if found_instances.len() > 0 {
 			//If so, early out
 			return Ok(ElementAddError::AlreadyInList {
-				element_type: subscriber_list_name(),
+				element_type: subscriber_list_element_name(),
 				list_name: format!("{}", subscriber_list_name()),
 			});
 		}
@@ -60,7 +60,7 @@ impl EventLog {
 		self._views.push(subscribing_view.clone());
 
 		Ok(ElementAddError::Success {
-			element_type: subscriber_list_name(),
+			element_type: subscriber_list_element_name(),
 		})
 	}
 

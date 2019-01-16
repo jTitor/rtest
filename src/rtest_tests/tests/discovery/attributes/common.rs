@@ -1,7 +1,6 @@
 /*!
  * TODO
  */
-use proc_macro::TokenStream;
 use rtest_impl::discovery;
 
 use crate::UnitTest;

@@ -3,8 +3,6 @@
  */
 use std::fmt;
 
-use failure::Fail;
-
 const PARALLEL_TESTS_LIST_NAME: &'static str = "main list";
 const MAIN_TESTS_LIST_NAME: &'static str = "parallel list";
 const IGNORED_TESTS_LIST_NAME: &'static str = "ignored list";
@@ -22,13 +20,11 @@ pub enum TestListIdentifier {
 
 impl fmt::Display for TestListIdentifier {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		let mut display_str = "";
-
-		match self {
-			TestListIdentifier::MainList => display_str = MAIN_TESTS_LIST_NAME,
-			TestListIdentifier::ParallelList => display_str = PARALLEL_TESTS_LIST_NAME,
-			TestListIdentifier::IgnoredList => display_str = IGNORED_TESTS_LIST_NAME,
-		}
+		let display_str = match self {
+			TestListIdentifier::MainList => MAIN_TESTS_LIST_NAME,
+			TestListIdentifier::ParallelList => PARALLEL_TESTS_LIST_NAME,
+			TestListIdentifier::IgnoredList => IGNORED_TESTS_LIST_NAME,
+		};
 
 		write!(f, "{}", display_str)
 	}

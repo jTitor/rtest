@@ -68,11 +68,6 @@ pub fn do_test(test: fn()) -> Result<(), TestError> {
 				});
 			}
 		}
-		_ => {
-			return Err(TestError::TestFailed {
-				cause: "Test failed for unknown reason".to_string(),
-			});
-		}
 	}
 }
 

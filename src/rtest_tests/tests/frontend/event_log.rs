@@ -49,8 +49,12 @@ fn test_log_broadcast() {
 	//Create *two* TerminalViews
 	//so any logs print twice
 	let mut event_log = EventLog::new();
-	event_log.subscribe(Arc::new(TerminalView::new()));
-	event_log.subscribe(Arc::new(TerminalView::new()));
+	if let Err(e) = event_log.subscribe(Arc::new(TerminalView::new())) {
+		assert!(false, "Failed to add terminal view: {}", e)
+	}
+	if let Err(e) = event_log.subscribe(Arc::new(TerminalView::new())) {
+		assert!(false, "Failed to add terminal view: {}", e)
+	}
 
 	//Visibility test: broadcast the message,
 	//it should appear twice

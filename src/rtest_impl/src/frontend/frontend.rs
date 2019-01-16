@@ -3,6 +3,8 @@
 */
 use std::sync::Arc;
 
+use failure::Error;
+
 use super::{EventLog, TerminalView};
 
 /**
@@ -14,20 +16,20 @@ pub struct Frontend {
 }
 
 impl Frontend {
-	pub fn new() -> Frontend {
+	pub fn new() -> Result<Frontend, Error> {
 		//Make a TerminalView
 		let terminal_view = Arc::new(TerminalView::new());
 		//Make an EventLog
 		let mut event_log = EventLog::new();
 
 		//Subscribe the TerminalView to the EventLog
-		event_log.subscribe(terminal_view.clone());
+		event_log.subscribe(terminal_view.clone())?;
 
 		//Move them both into the Frontend instance
-		Frontend {
+		Ok(Frontend {
 			_terminal_view: terminal_view,
 			_event_log: event_log,
-		}
+		})
 	}
 
 	/**

@@ -4,14 +4,13 @@
  */
 use proc_macro::TokenStream;
 
-use crate::discovery::TestEntry;
 use crate::discovery::rls_common;
 
 /**
  * If true, the given TokenStream contains
  * a "main" element in its attributes.
  */
-pub fn attr_contains_main(attr: &TokenStream) -> bool {
+pub fn attr_contains_main(_attr: &TokenStream) -> bool {
 	unimplemented!();
 }
 
