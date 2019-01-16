@@ -17,8 +17,6 @@ extern crate syn;
 
 #[macro_use]
 extern crate quote;
-#[macro_use]
-extern crate rtest_tool_macros;
 
 //Define our base level modules.
 pub mod discovery;
