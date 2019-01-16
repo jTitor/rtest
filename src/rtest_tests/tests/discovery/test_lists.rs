@@ -2,10 +2,11 @@
  * TODO
  */
 use rtest_impl;
+use rtest_impl::discovery::TestAddError;
 use rtest_impl::discovery::TestEntry;
 
-use crate::UnitTest;
 use crate::common_functions::*;
+use crate::UnitTest;
 
 /**
  * Tests that the default instantiation of
@@ -205,11 +206,7 @@ fn test_main_list() {
 	//parallel_tests() or ignored_tests() will succeed
 	let next_main_test = test_entry_named("Main Test 2");
 	if let Err(x) = lists.add_main_test(next_main_test.clone()) {
-		assert!(
-			false,
-			"Adding a unique test to main_tests failed: {}",
-			x
-		);
+		assert!(false, "Adding a unique test to main_tests failed: {}", x);
 	}
 
 	//ASSERT: Adding a main test that's already in
@@ -223,7 +220,12 @@ fn test_main_list() {
 		);
 	}
 	let len_after_adding = lists.main_tests().len();
-	assert!(len_before_adding == len_after_adding, "Duplicate test added to main_tests list: list should have {} tests, actually has {}", len_before_adding, len_after_adding);
+	assert!(
+		len_before_adding == len_after_adding,
+		"Duplicate test added to main_tests list: list should have {} tests, actually has {}",
+		len_before_adding,
+		len_after_adding
+	);
 
 	//ASSERT: Adding a main test that's already in
 	//parallel_tests() returns Err() (TODO: possibly match for "in another list")
@@ -232,9 +234,18 @@ fn test_main_list() {
 	}
 
 	//ASSERT: Adding a main test that's already in
-	//ignored_tests() returns Err() (TODO: possibly match for "in another list")
-	if let Ok(_) = lists.add_main_test(ignored_test_to_add.clone()) {
-		assert!(false, "Adding a test that was already in ignored_tests to main_tests should fail but succeeded");
+	//ignored_tests() returns Ok(In another list error).
+	let add_ignored_test_to_main = lists.add_main_test(ignored_test_to_add.clone());
+	if let Ok(TestAddError::TestAlreadyInList { list: _ }) = add_ignored_test_to_main {
+	} else {
+		let details_string = {
+			match add_ignored_test_to_main {
+				Ok(x) => format!("succeeded instead with {}", x),
+				Err(e) => format!("failed with {}", e),
+			}
+		};
+
+		assert!(false, "Adding a test that was already in ignored_tests to main_tests should succeed with TestAddError::TestAlreadyInList, but {}", details_string);
 	}
 }
 
@@ -294,7 +305,12 @@ fn test_parallel_list() {
 		);
 	}
 	let len_after_adding = lists.tests().len();
-	assert!(len_before_adding == len_after_adding, "Duplicate test added to parallel_tests list: list should have {} tests, actually has {}", len_before_adding, len_after_adding);
+	assert!(
+		len_before_adding == len_after_adding,
+		"Duplicate test added to parallel_tests list: list should have {} tests, actually has {}",
+		len_before_adding,
+		len_after_adding
+	);
 
 	//ASSERT: Adding a parallel test that's already in
 	//main_tests() returns Err() (TODO: possibly match for "in another list")
@@ -303,9 +319,18 @@ fn test_parallel_list() {
 	}
 
 	//ASSERT: Adding a parallel test that's already in
-	//ignored_tests() returns Err() (TODO: possibly match for "in another list")
-	if let Ok(_) = lists.add_test(ignored_test_to_add.clone()) {
-		assert!(false, "Adding a test that was already in ignored_tests to parallel_tests should fail but succeeded");
+	//ignored_tests() returns Ok(In another list error).
+	let add_ignored_test_to_parallel = lists.add_test(ignored_test_to_add.clone());
+	if let Ok(TestAddError::TestAlreadyInList { list: _ }) = add_ignored_test_to_parallel {
+	} else {
+		let details_string = {
+			match add_ignored_test_to_parallel {
+				Ok(x) => format!("succeeded instead with {}", x),
+				Err(e) => format!("failed with {}", e),
+			}
+		};
+
+		assert!(false, "Adding a test that was already in ignored_tests to parallel_tests should succeed with TestAddError::TestAlreadyInList, but {}", details_string);
 	}
 }
 
@@ -365,21 +390,23 @@ fn test_ignored_list() {
 		);
 	}
 	let len_after_adding = lists.ignored_tests().len();
-	assert!(len_before_adding == len_after_adding, "Duplicate test added to ignored_tests list: list should have {} tests, actually has {}", len_before_adding, len_after_adding);
+	assert!(
+		len_before_adding == len_after_adding,
+		"Duplicate test added to ignored_tests list: list should have {} tests, actually has {}",
+		len_before_adding,
+		len_after_adding
+	);
 
 	//ASSERT: Ignoring a main test succeeds
 	if let Err(x) = lists.ignore_test(main_test_to_add.clone()) {
-		assert!(
-			false,
-			"Ignoring a test in main_tests failed: {}",
-			x
-		);
+		assert!(false, "Ignoring a test in main_tests failed: {}", x);
 	}
 	//ASSERT: The ignored main test is no longer in main_tests()
-	if let Some(_) = lists.main_tests().iter().find(
-		|&x| x == &main_test_to_add
-	) {
-		assert!(false, "Test that should be removed from main_tests is still there");
+	if let Some(_) = lists.main_tests().iter().find(|&x| x == &main_test_to_add) {
+		assert!(
+			false,
+			"Test that should be removed from main_tests is still there"
+		);
 	}
 
 	//ASSERT: Ignoring a parallel test succeeds
@@ -391,10 +418,11 @@ fn test_ignored_list() {
 		);
 	}
 	//ASSERT: The ignored parallel test is no longer in tests()
-	if let Some(_) = lists.tests().iter().find(
-		|&x| x == &parallel_test_to_add
-	) {
-		assert!(false, "Test that should be removed from parallel tests list is still there");
+	if let Some(_) = lists.tests().iter().find(|&x| x == &parallel_test_to_add) {
+		assert!(
+			false,
+			"Test that should be removed from parallel tests list is still there"
+		);
 	}
 }
 

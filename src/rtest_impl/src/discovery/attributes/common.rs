@@ -8,30 +8,11 @@ use crate::discovery::TestEntry;
 use crate::discovery::rls_common;
 
 /**
- * If true, the given TokenStream represents a function,
- * otherwise it does not represent a function.
- */
-pub fn is_function(item: &TokenStream) -> bool {
-	unimplemented!();
-}
-
-/**
  * If true, the given TokenStream contains
  * a "main" element in its attributes.
  */
 pub fn attr_contains_main(attr: &TokenStream) -> bool {
 	unimplemented!();
-}
-
-/**
- * Prints a warning to RLS
- * that the given TokenStream is not a function,
- * and so attribute_name will have no effect.
- */
-pub fn warn_not_function(item: &TokenStream, attribute_name: &str) {
-	let warning_text = format!("TokenStream '{}' does not represent a function, attribute '#[{}]' will have no effect", item, attribute_name);
-
-	rls_common::post_rls_warning(&warning_text);
 }
 
 /**
@@ -52,17 +33,4 @@ pub fn debug_warn_test_add_failed(test_name: &str, error_message: &str) {
 					);
 
 	rls_common::post_rls_debug_warning(&warning_text);
-}
-
-/**
- * Generates a TestEntry from the given
- * TokenStream if possible.
- */
-pub fn extract_test_entry(item: &TokenStream) -> TestEntry {
-	unimplemented!();
-	let test_name = "";
-	
-	//The real question - how do we get
-	//a fn() from a TokenStream?
-	unimplemented!();
 }

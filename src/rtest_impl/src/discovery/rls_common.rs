@@ -8,8 +8,10 @@ use std::fmt;
  * as an RLS error.
  */
 pub fn post_rls_error<T: fmt::Display>(text: &T) {
-	//Report to RLS...
-	unimplemented!();
+	//...We can't actually print an *RLS* error
+	//as there's no real API for dynamic stringed compiler errors.
+	//Print to stderr instead.
+	eprintln!("[error] {}", text);
 }
 
 /**
@@ -17,8 +19,10 @@ pub fn post_rls_error<T: fmt::Display>(text: &T) {
  * as an RLS warning.
  */
 pub fn post_rls_warning<T: fmt::Display>(text: &T) {
-	//Report to RLS...
-	unimplemented!();
+	//...We can't actually print an *RLS* error
+	//as there's no real API for dynamic stringed compiler errors.
+	//Print to stderr instead.
+	eprintln!("[warn] {}", text);
 }
 
 /**
@@ -26,6 +30,8 @@ pub fn post_rls_warning<T: fmt::Display>(text: &T) {
  * as an RLS debug warning.
  */
 pub fn post_rls_debug_warning<T: fmt::Display>(text: &T) {
-	//Report to RLS...
-	unimplemented!();
+	//...We can't actually print an *RLS* error
+	//as there's no real API for dynamic stringed compiler errors.
+	//Print to stderr instead.
+	eprintln!("[debug] {}", text);
 }

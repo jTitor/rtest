@@ -8,7 +8,7 @@
 #![allow(unreachable_code)]
 //Syn needs a bunch of recursions
 //to generate the test identifier code
-#![recursion_limit="256"]
+#![recursion_limit = "256"]
 
 extern crate failure;
 extern crate proc_macro;
@@ -17,6 +17,8 @@ extern crate syn;
 
 #[macro_use]
 extern crate quote;
+#[macro_use]
+extern crate rtest_tool_macros;
 
 //Define our base level modules.
 pub mod discovery;

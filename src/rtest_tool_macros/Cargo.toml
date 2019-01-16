@@ -1,0 +1,16 @@
+[package]
+name = "rtest_tool_macros"
+version = "0.1.0"
+authors = ["jTitor <me@me.me>"]
+edition = "2018"
+description = "Defines macros for internal use in the rtest library."
+
+[dependencies]
+#Enable some of the unstable API.
+# proc-macro2 = "0.4"
+
+[lib]
+#Enables custom macro definition.
+#Disabled currently to allow export of macro_rules!
+#macros
+# proc-macro = true

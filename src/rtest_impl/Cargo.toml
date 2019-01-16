@@ -12,6 +12,7 @@ rayon = "*"
 
 syn = {version = "*", features = ["full", "visit", "visit-mut", "fold"]}
 quote = {version = "*"}
+rtest_tool_macros = { path = "../rtest_tool_macros", version = "*" }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 #This is needed for testing on macOS,

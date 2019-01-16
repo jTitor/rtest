@@ -121,6 +121,9 @@ impl TestLists {
 	/**
 	 * Removes all instances of the given
 	 * test from the requested test list.
+	 *
+	 * Returns Ok if the item was successfully removed,
+	 * Err otherwise.
 	 */
 	fn remove_from_list(
 		&mut self,
@@ -151,7 +154,11 @@ impl TestLists {
 	}
 
 	/**
-	 * TODO
+	 * Verifies that the given TestEntry is not in the specified list.
+	 *
+	 * Returns Ok if the TestEntry was verified as
+	 * not being in the specified list,
+	 * Err otherwise.
 	 */
 	fn verify_removed_from_list(
 		&self,
@@ -179,7 +186,11 @@ impl TestLists {
 	}
 
 	/**
-	 * TODO
+	 * Adds the given TestEntry to the specified list, then verifies that
+	 * it actually is in that list.
+	 *
+	 * Returns Ok if the TestEntry was verified as being in the specified list,
+	 * Err otherwise.
 	 */
 	fn add_to_list_and_verify(
 		&mut self,
@@ -228,6 +239,9 @@ impl TestLists {
 
 	/**
 	 * Adds a test to the TestList's list of main-thread-only tests.
+	 *
+	 * Returns Ok if the test could be added to the list or was already in the list,
+	 * and Err otherwise.
 	 */
 	pub fn add_main_test(&mut self, main_test: TestEntry) -> Result<TestAddError, Error> {
 		//Sanity check: Is this already in parallel_tests?
@@ -247,6 +261,9 @@ impl TestLists {
 
 	/**
 	 * Adds a test to the TestList's list of parallelizable tests.
+	 *
+	 * Returns Ok if the test could be added to the list or was already in the list,
+	 * and Err otherwise.
 	 */
 	pub fn add_test(&mut self, test: TestEntry) -> Result<TestAddError, Error> {
 		//Sanity check: Is this already in main_tests?
@@ -266,6 +283,9 @@ impl TestLists {
 
 	/**
 	 * Marks a test as an ignored test in the TestList.
+	 *
+	 * Returns Ok if the test could be added to the ignore list or was already in the list,
+	 * and Err otherwise.
 	 */
 	pub fn ignore_test(&mut self, test: TestEntry) -> Result<TestAddError, Error> {
 		//Remove test from main_tests and parallel_tests,

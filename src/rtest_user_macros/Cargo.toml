@@ -1,14 +1,15 @@
 [package]
-name = "rtest_macros"
+name = "rtest_user_macros"
 version = "0.1.0"
 authors = ["jTitor <me@me.me>"]
 edition = "2018"
 workspace = "../../"
+description = "Defines user-facing macros for the rtest library."
 
 [dependencies]
 rtest_impl = { path = "../rtest_impl", version = "*" }
 
 [lib]
-name = "rtest_macros"
+name = "rtest_user_macros"
 #Enable custom macro definition
 proc-macro = true
