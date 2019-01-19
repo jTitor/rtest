@@ -1,0 +1,24 @@
+[package]
+name = "rtest_test_discovery_sample"
+version = "0.1.0"
+authors = ["jTitor <me@me.me>"]
+edition = "2018"
+description = "Example Rust project used by rtest_tests to test rtest_impl's macro discovery and codegen systems."
+
+[dependencies]
+
+[[tests]]
+#This project should build as a normal project, but also have a ./tests/ section.
+#Use the ./tests section like a normal Rust test directory, 
+#but in its lib.rs, use rtest_user_macros' macros within the main() fn.
+
+#Path to the root file for the unit tests.
+#As with [[bin]]/[[lib]] assuming CWD prefix is "./src",
+#this assumes CWD prefix is "./tests".
+name = "main"
+#This disables the standard Rust test harness,
+#and instead builds the test crate as a binary.
+#Unclear if Cargo will still run the resulting binary
+#when ```cargo test``` is invoked, but exit code 0
+#indicates success and exit code 1 failure.
+harness = false
