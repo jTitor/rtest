@@ -6,6 +6,8 @@ edition = "2018"
 description = "Example Rust project used by rtest_tests to test rtest_impl's macro discovery and codegen systems."
 
 [dependencies]
+rtest_user_macros = { path = "../rtest_user_macros", version = "*" }
+
 
 [[tests]]
 #This project should build as a normal project, but also have a ./tests/ section.
