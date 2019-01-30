@@ -104,6 +104,9 @@ pub fn expose_ignore(item: TokenStream) -> TokenStream {
 	let expose_fn: TokenStream = quote! {
 		pub fn _rtest_ignore_#fn_name() {
 			#fn_name();
+			//TODO: generate TestEntry here?
+			//that way we don't need to
+			//stuff it into one later?
 			unimplemented!();
 		}
 	}
