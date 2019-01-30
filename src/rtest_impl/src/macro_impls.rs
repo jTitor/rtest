@@ -1,20 +1,7 @@
 /*!
- * Crate root for the library.
+ * Defines the functions that perform the implementations
+ * of the macros defined in the rtest_user_macros crate.
  */
-
-//Anything marked "unreachable!()"
-//is intentional; it's supposed to indicate
-//that the section needs expanding
-#![allow(unreachable_code)]
-
-extern crate proc_macro;
-extern crate rtest_impl::macro_impls;
-
-//Define our base level modules.
-
-//Define custom attributes; whoever decided these have to be
-//in the crate root were - actually they're not so bad now
-//that these are in a separate crate
 use proc_macro::TokenStream;
 
 /**
@@ -22,20 +9,19 @@ use proc_macro::TokenStream;
  * Can be used as #[test(main)], in which case
  * the function's test will run on the main thread.
  */
-#[proc_macro_attribute]
-pub fn test(attrib: TokenStream, item: TokenStream) -> TokenStream {
-	unimplemented!();
-	//Codegen here...
-	let expanded = macro_impls::expose_test(attrib, item);
-
-	//TODO: this goes in rtest_impl, NOT here.
-	//Create token stream to augment input with.
+pub fn expose_test(attrib: TokenStream, item: TokenStream) -> TokenStream {
+	//TODO
 	//Does attrib.tolower() contain "main"?
 	//	If so, tokenstream should create a main test that
 	//	calls the function.
 	//	Else, tokenstream should create a standard test
 	//	that calls the function.
+	unimplemented!();
+	//Create token stream to augment input with.
+	let expanded = unimplemented!();
+
 	//Append to input tokenstream.
+	unimplemented!();
 
 	expanded
 }
@@ -45,8 +31,7 @@ pub fn test(attrib: TokenStream, item: TokenStream) -> TokenStream {
  * When testing is run, the function will be acknowledged,
  * but will not be executed by the test system.
  */
-#[proc_macro_attribute]
-pub fn ignore(attrib: TokenStream, item: TokenStream) -> TokenStream {
+pub fn expose_ignore(item: TokenStream) -> TokenStream {
 	unimplemented!();
 	//Codegen here...
 	let expanded = macro_impls::expose_ignore(item);
@@ -63,19 +48,15 @@ pub fn ignore(attrib: TokenStream, item: TokenStream) -> TokenStream {
  * Exposes a module as a test module, reexporting
  * it as a public module if it wasn't already public.
  */
-#[proc_macro_attribute]
-pub fn test_mod(_attrib: TokenStream, item: TokenStream) -> TokenStream {
-	unimplemented!();
-	//Codegen here...
-	let expanded = macro_impls::expose_test_mod(item);
-
-	//TODO: this goes in rtest_impl, NOT here.
+pub fn expose_test_mod(item: TokenStream) -> TokenStream {
 	//Get the input item as a ItemMod.
+	unimplemented!();
 	//If conversion fails, return as is.
+	unimplemented!();
 	//Otherwise, mark mod as pub.
+	unimplemented!();
 	//Convert back to TokenStream and return that.
-
-	expanded
+	unimplemented!();
 }
 
 /**
@@ -86,10 +67,14 @@ pub fn test_mod(_attrib: TokenStream, item: TokenStream) -> TokenStream {
  * root module of your unit test crate.
  * Only apply this macro once.
  */
-#[proc_macro]
-pub fn init_rtest(_item: TokenStream) -> TokenStream {
+pub fn generate_harness_entry(file_path: &str) -> TokenStream {
+	//TODO
+	//Send a syn traverse to the given file.
+	//Use the output to define our list of test fn calls.
+	unimplemented!();
+
 	//Apply the codegen...
-	let expanded = macro_impls::generate_harness_entry(file!());
+	let expanded = unimplemented!();
 
 	//And return the augmented code	
 	expanded
@@ -103,11 +88,9 @@ pub fn init_rtest(_item: TokenStream) -> TokenStream {
  * This will call std::process::exit(), so there's no point
  * trying to call this more than once.
  */
-#[proc_macro]
-pub fn run_rtest(_item: TokenStream) -> TokenStream {
-	unimplemented!();
-	//Generate code to run init_rtest!()'s fn...
-	let result = macro_impls::generate_harness_invocation();
+pub fn generate_harness_invocation() -> TokenStream {
+	//Straightforward quote!{} of a function invocation
+	let result = unimplemented!();
 
 	result
 }

@@ -4,8 +4,9 @@
 #[macro_use]
 extern crate rtest_user_macros;
 
-#[init_rtest]
 mod tests;
+
+init_rtest!();
 
 /**
  * Entry point for the test harness.

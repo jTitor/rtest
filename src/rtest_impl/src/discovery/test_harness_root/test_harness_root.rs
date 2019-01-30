@@ -4,10 +4,13 @@
  */
 use proc_macro::TokenStream;
 use quote::ToTokens;
+use std::File;
 use syn;
 
-use crate::discovery::rls_common::*;
+use failure::Error;
+
 use super::discover_tree::DiscoverTree;
+use crate::discovery::rls_common::*;
 
 const PARSE_FAILED_TEXT: &'static str = "Failed to parse crate root; no tests will be run";
 const MODIFY_FAILED_TEXT: &'static str = "Failed to parse modules in file; no tests will be run";
@@ -52,4 +55,16 @@ pub fn do_test_harness_root(_attr: TokenStream, item: TokenStream) -> TokenStrea
 	}
 
 	unreachable!();
+}
+
+pub fn discover_file(file_path: &str) -> Result<TokenStream, Error> {
+	let mut file = File::open(file_path)?;
+	let mut content = String::new();
+	file.read_to_string(&mut content)?;
+
+	let mut file_tokens = syn::parse_file(&content)?;
+
+	let modify_result = DiscoverTree::new().discover(&mut file_tokens)?;
+
+	Ok(modify_result.into_token_stream().into())
 }

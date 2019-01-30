@@ -24,6 +24,7 @@ pub use self::discovery::do_test_harness_root;
 
 pub mod errors;
 pub mod frontend;
+pub mod macro_impls;
 pub mod runner;
 pub mod test_run;
 
