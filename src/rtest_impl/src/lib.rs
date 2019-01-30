@@ -13,7 +13,6 @@
 extern crate failure;
 extern crate proc_macro;
 extern crate rayon;
-#[macro_use]
 extern crate syn;
 
 #[macro_use]
@@ -21,8 +20,6 @@ extern crate quote;
 
 //Define our base level modules.
 pub mod discovery;
-pub use self::discovery::do_test_harness_root;
-
 pub mod errors;
 pub mod frontend;
 pub mod macro_impls;

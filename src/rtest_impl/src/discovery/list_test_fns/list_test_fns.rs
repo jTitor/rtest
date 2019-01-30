@@ -49,7 +49,7 @@ impl TestFnFinder {
 		//"crate::"; verify in manual testing.
 		let mut result = "".to_string();
 
-		for name in self.mod_names {
+		for name in &self.mod_names {
 			result = format!("{}{}::", result, name);
 		}
 
@@ -136,7 +136,7 @@ impl<'a> visit::Visit<'a> for TestFnFinder {
 
 	fn visit_item_fn(&mut self, i: &'a syn::ItemFn) {
 		//Check attribs:
-		for attribute in i.attrs {
+		for attribute in &i.attrs {
 			if let Some(syn::Meta::Word(attrib_name)) = attribute.interpret_meta() {
 				match attrib_name.to_string().as_str() {
 					"test" => {

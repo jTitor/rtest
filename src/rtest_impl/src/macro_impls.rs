@@ -122,7 +122,7 @@ pub fn expose_ignore(item: TokenStream) -> TokenStream {
  */
 pub fn expose_test_mod(item: TokenStream) -> TokenStream {
 	//Get the input item as a ItemMod.
-	let cast_item = syn::parse::<syn::ItemMod>(item);
+	let cast_item = syn::parse::<syn::ItemMod>(item.clone());
 
 	match cast_item {
 		Err(_) => {
