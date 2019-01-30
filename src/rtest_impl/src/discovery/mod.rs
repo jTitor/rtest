@@ -15,5 +15,5 @@ pub use self::static_test_list::*;
 mod attributes;
 pub use self::attributes::*;
 
-mod test_harness_root;
-pub use self::test_harness_root::*;
+mod list_test_fns;
+pub use self::list_test_fns::*;

@@ -8,14 +8,16 @@
 #![allow(unreachable_code)]
 
 extern crate proc_macro;
-extern crate rtest_impl::macro_impls;
+use proc_macro::TokenStream;
+
+extern crate rtest_impl;
+use rtest_impl::macro_impls;
 
 //Define our base level modules.
 
 //Define custom attributes; whoever decided these have to be
 //in the crate root were - actually they're not so bad now
 //that these are in a separate crate
-use proc_macro::TokenStream;
 
 /**
  * Marks a function as a test function.

@@ -13,6 +13,7 @@
 extern crate failure;
 extern crate proc_macro;
 extern crate rayon;
+#[macro_use]
 extern crate syn;
 
 #[macro_use]
