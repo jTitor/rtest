@@ -166,7 +166,7 @@ pub fn generate_harness_entry(file_path: &str) -> TokenStream {
 			//TODO - if this expands to a Vec<String>
 			//instead of Vec<fn>, we're going to
 			//have to find another way
-			let fn_list = var![#(#exposed_fn_list),*];
+			let fn_list = vec![#(#exposed_fn_list),*];
 
 			for function in fn_list {
 				function();
