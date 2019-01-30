@@ -3,6 +3,7 @@
 members = [
 	"src/rtest_impl",
 	"src/rtest_user_macros",
+	"src/rtest_user_proc_macros",
 	"src/rtest_tests",
 	"src/rtest_test_discovery_sample",
 ]

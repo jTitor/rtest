@@ -2,7 +2,7 @@
  * Crate root for the library.
  */
 
-//Anything marked "unreachable!()"
+//Anything marked "unimplemented!()"
 //is intentional; it's supposed to indicate
 //that the section needs expanding
 #![allow(unreachable_code)]

@@ -2,6 +2,8 @@
  * Defines the root module for tests in this crate.
  */
 #[macro_use]
+extern crate rtest_user_proc_macros;
+#[macro_use]
 extern crate rtest_user_macros;
 
 mod tests;

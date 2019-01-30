@@ -129,8 +129,12 @@ impl<'a> visit::Visit<'a> for TestFnFinder {
 		//Update name state.
 		self.push_mod_name(i.ident.to_string());
 
+		//The traversal will add any
+		//attrib-marked functions
 		visit::visit_item_mod(self, i);
 
+		//We're done with this module,
+		//so remove it from the name stack
 		self.pop_mod_name();
 	}
 
