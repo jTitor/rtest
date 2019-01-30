@@ -10,6 +10,37 @@ use std::io::Read;
 
 /**
  * TODO
+ */
+#[derive(Default, Debug, Clone)]
+pub struct TestFnNamePair {
+	pub test_name: String,
+	pub fn_name: String
+}
+
+/**
+ * TODO
+ */
+#[derive(Default, Debug, Clone)]
+pub struct TestFnList {
+	//The names of each function we've found
+	//that should be run/ignored by the test runner.
+	parallel_fn_names: Vec<TestFnNamePair>,
+	//TODO
+	main_fn_names: Vec<TestFnNamePair>,
+	//TODO
+	ignore_fn_names: Vec<TestFnNamePair>,
+}
+
+impl TestFnList {
+	pub fn clear(&mut self) {
+		self.parallel_fn_names.clear();
+		self.main_fn_names.clear();
+		self.ignore_fn_names.clear();
+	}
+}
+
+/**
+ * TODO
  *
  * Runs attribute calls over
  * a given AST tree, exposing the
@@ -20,9 +51,7 @@ use std::io::Read;
 pub struct TestFnFinder {
 	//The names of the modules we're currently in.
 	mod_names: Vec<String>,
-	//The names of each function we've found
-	//that should be run/ignored by the test runner.
-	fn_names: Vec<String>,
+	test_fns: TestFnList,
 }
 
 impl TestFnFinder {
@@ -62,7 +91,22 @@ impl TestFnFinder {
 	fn add_test_fn(&mut self, fn_name: &str) {
 		let full_fn_name = format!("{}_rtest_test_{}", self.mod_name(), fn_name);
 
-		self.fn_names.push(full_fn_name);
+		self.test_fns.parallel_fn_names.push(TestFnNamePair {
+			test_name: fn_name.to_string(),
+			fn_name: full_fn_name
+		});
+	}
+
+	/**
+	 * TODO
+	 */
+	fn add_main_test_fn(&mut self, fn_name: &str) {
+		let full_fn_name = format!("{}_rtest_test_{}", self.mod_name(), fn_name);
+
+		self.test_fns.main_fn_names.push(TestFnNamePair {
+			test_name: fn_name.to_string(),
+			fn_name: full_fn_name
+		});
 	}
 
 	/**
@@ -71,12 +115,15 @@ impl TestFnFinder {
 	fn add_ignore_fn(&mut self, fn_name: &str) {
 		let full_fn_name = format!("{}_rtest_ignore_{}", self.mod_name(), fn_name);
 
-		self.fn_names.push(full_fn_name);
+		self.test_fns.ignore_fn_names.push(TestFnNamePair {
+			test_name: fn_name.to_string(),
+			fn_name: full_fn_name
+		});
 	}
 
 	fn clear_all(&mut self) {
 		self.mod_names.clear();
-		self.fn_names.clear();
+		self.test_fns.clear();
 	}
 
 	/**
@@ -85,7 +132,7 @@ impl TestFnFinder {
 	 * we can't use the try operator directly in
 	 * find_test_fns without undesired early return.
 	 */
-	fn do_find_test_fns(&mut self, file_path: &str) -> Result<Vec<String>, Error> {
+	fn do_find_test_fns(&mut self, file_path: &str) -> Result<TestFnList, Error> {
 		//Open the file.
 		let mut file = File::open(file_path)?;
 		let mut content = String::new();
@@ -98,7 +145,7 @@ impl TestFnFinder {
 
 		//self.fn_names will contain our
 		//fully-pathed function names, so return that
-		Ok(self.fn_names.clone())
+		Ok(self.test_fns.clone())
 	}
 
 	//Public functions.
@@ -112,7 +159,7 @@ impl TestFnFinder {
 	/**
 	 * TODO
 	 */
-	pub fn find_test_fns(&mut self, file_path: &str) -> Result<Vec<String>, Error> {
+	pub fn find_test_fns(&mut self, file_path: &str) -> Result<TestFnList, Error> {
 		self.clear_all();
 
 		let result = self.do_find_test_fns(file_path);
@@ -148,6 +195,11 @@ impl<'a> visit::Visit<'a> for TestFnFinder {
 						//If so, generate name for test function.
 						//Add it to the list.
 						self.add_test_fn(i.ident.to_string().as_str());
+						//TODO: this may be #[test(main)],
+						//which might map to a diffferent
+						//syn::Meta variant. Handle that
+						//case separately.
+						unimplemented!();
 					}
 					"ignore" => {
 						//Else, does this have #[ignore]?
