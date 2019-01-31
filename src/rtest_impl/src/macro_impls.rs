@@ -156,21 +156,56 @@ pub fn generate_harness_entry(file_path: &str) -> TokenStream {
 	let exposed_fn_list = {
 		match TestFnFinder::new().find_test_fns(file_path) {
 			Ok(inner) => inner,
-			_ => vec![]
+			_ => Default::default(),
 		}
 	};
+
+	//We don't have ToTokens for TestLists,
+	//so destructure the TestFnList
+	//into vecs and restructure inside the quote!{}
+	let (test_pairs, test_main_pairs, ignore_pairs) = (
+		exposed_fn_list.parallel_fn_names,
+		exposed_fn_list.main_fn_names,
+		exposed_fn_list.ignore_fn_names,
+	);
+	let (test_names, test_fns): (Vec<_>, Vec<_>) = test_pairs
+		.into_iter()
+		.map(|x| (x.test_name, x.fn_name))
+		.unzip();
+	let (test_main_names, test_main_fns): (Vec<_>, Vec<_>) = test_main_pairs
+		.into_iter()
+		.map(|x| (x.test_name, x.fn_name))
+		.unzip();
+	let (ignore_names, ignore_fns): (Vec<_>, Vec<_>) = ignore_pairs
+		.into_iter()
+		.map(|x| (x.test_name, x.fn_name))
+		.unzip();
 
 	//Apply the codegen...
 	let expanded = quote! {
 		pub fn run_rtest() {
-			//TODO - if this expands to a Vec<String>
+			::std::process::exit({//TODO - if this expands to a Vec<String>
 			//instead of Vec<fn>, we're going to
 			//have to find another way
-			let fn_list = vec![#(#exposed_fn_list),*];
+			let test_names = vec![#(stringify!(#test_names)),*];
+			let test_main_names = vec![#(stringify!(#test_main_names)),*];
+			let ignore_names = vec![#(stringify!(#ignore_names)),*];
+			let test_fns = vec![#(#test_fns),*];
+			let test_main_fns = vec![#(#test_main_fns),*];
+			let ignore_fns = vec![#(#ignore_fns),*];
 
-			for function in fn_list {
-				function();
-			}
+			let test_entries = rtest_impl::discovery::TestEntry::vec_from_vecs(test_names, test_fns);
+			let test_main_entries rtest_impl::discovery::TestEntry::vec_from_vecs(test_main_names, test_main_fns);
+			let ignore_entries rtest_impl::discovery::TestEntry::vec_from_vecs(ignore_names, ignore_fns);
+
+			let test_list = rtest_impl::discovery::TestLists::from_test_entries(test_entries, test_main_entries, ignore_entries);
+
+			//Actually run the test runner...
+			match rtest_impl::Runner::new()
+			.run(test_list) {
+				Ok(_) => 0,
+				_ => 1
+			}});
 		}
 	}
 	.into();

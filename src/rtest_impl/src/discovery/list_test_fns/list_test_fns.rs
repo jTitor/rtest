@@ -8,8 +8,17 @@ use syn::visit;
 use std::fs::File;
 use std::io::Read;
 
+use crate::discovery;
+
 /**
- * TODO
+ * Stores the name of a test function
+ * and the name of the function it's representing.
+ * 
+ * This is used instead of a discovery::TestEntry
+ * because the syn traversal can't provide function pointers
+ * to the content being traversed; instead we have
+ * to use the identifiers provided in a quote!{} to
+ * convert them to function pointers at macro time.
  */
 #[derive(Default, Debug, Clone)]
 pub struct TestFnNamePair {
@@ -18,20 +27,25 @@ pub struct TestFnNamePair {
 }
 
 /**
- * TODO
+ * Stores lists of TestFnNamePairs for
+ * all of the test/ignore types used by
+ * discovery::TestLists.
  */
 #[derive(Default, Debug, Clone)]
 pub struct TestFnList {
 	//The names of each function we've found
 	//that should be run/ignored by the test runner.
-	parallel_fn_names: Vec<TestFnNamePair>,
+	pub parallel_fn_names: Vec<TestFnNamePair>,
 	//TODO
-	main_fn_names: Vec<TestFnNamePair>,
+	pub main_fn_names: Vec<TestFnNamePair>,
 	//TODO
-	ignore_fn_names: Vec<TestFnNamePair>,
+	pub ignore_fn_names: Vec<TestFnNamePair>,
 }
 
 impl TestFnList {
+	/**
+	 * TODO
+	 */
 	pub fn clear(&mut self) {
 		self.parallel_fn_names.clear();
 		self.main_fn_names.clear();

@@ -338,22 +338,22 @@ impl TestLists {
 	 * from the given lists of TestEntries.
 	 */
 	pub fn from_test_entries(
-		parallel_tests: &Vec<TestEntry>,
-		main_tests: &Vec<TestEntry>,
-		ignored_tests: &Vec<TestEntry>,
+		parallel_tests: Vec<TestEntry>,
+		main_tests: Vec<TestEntry>,
+		ignored_tests: Vec<TestEntry>,
 	) -> Result<TestLists, Error> {
 		let mut result = TestLists::new();
 
-		for test in parallel_tests {
-			result.add_test(test.clone())?;
+		for test in parallel_tests.into_iter() {
+			result.add_test(test)?;
 		}
 
-		for test in main_tests {
-			result.add_main_test(test.clone())?;
+		for test in main_tests.into_iter() {
+			result.add_main_test(test)?;
 		}
 
-		for test in ignored_tests {
-			result.ignore_test(test.clone())?;
+		for test in ignored_tests.into_iter() {
+			result.ignore_test(test)?;
 		}
 
 		Ok(result)
