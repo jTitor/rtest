@@ -8,9 +8,7 @@ extern crate rtest_user_macros;
 
 //Custom attributes can't be applied to modules,
 //so... use a macro instead I guess?
-#[test_mod]
-mod private_module;
-#[test_mod]
+//mod private_module;
 pub mod pub_module;
 
 init_rtest!();

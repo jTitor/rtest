@@ -183,6 +183,10 @@ pub fn generate_harness_entry(file_path: &str) -> TokenStream {
 
 	//Apply the codegen...
 	let expanded = quote! {
+		extern crate rtest_impl;
+		use rtest_impl::discovery::{TestEntry, TestLists};
+		use rtest_impl::Runner;
+
 		pub fn run_rtest() {
 			::std::process::exit({//TODO - if this expands to a Vec<String>
 			//instead of Vec<fn>, we're going to
@@ -194,14 +198,14 @@ pub fn generate_harness_entry(file_path: &str) -> TokenStream {
 			let test_main_fns = vec![#(#test_main_fns),*];
 			let ignore_fns = vec![#(#ignore_fns),*];
 
-			let test_entries = rtest_impl::discovery::TestEntry::vec_from_vecs(test_names, test_fns);
-			let test_main_entries rtest_impl::discovery::TestEntry::vec_from_vecs(test_main_names, test_main_fns);
-			let ignore_entries rtest_impl::discovery::TestEntry::vec_from_vecs(ignore_names, ignore_fns);
+			let test_entries = TestEntry::vec_from_vecs(test_names, test_fns);
+			let test_main_entries TestEntry::vec_from_vecs(test_main_names, test_main_fns);
+			let ignore_entries TestEntry::vec_from_vecs(ignore_names, ignore_fns);
 
-			let test_list = rtest_impl::discovery::TestLists::from_test_entries(test_entries, test_main_entries, ignore_entries);
+			let test_list = TestLists::from_test_entries(test_entries, test_main_entries, ignore_entries);
 
 			//Actually run the test runner...
-			match rtest_impl::Runner::new()
+			match Runner::new()
 			.run(test_list) {
 				Ok(_) => 0,
 				_ => 1
