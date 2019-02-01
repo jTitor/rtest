@@ -6,7 +6,10 @@ extern crate rtest_user_proc_macros;
 #[macro_use]
 extern crate rtest_user_macros;
 
-mod tests;
+#[test_mod]
+mod private_module;
+#[test_mod]
+pub mod pub_module;
 
 init_rtest!();
 

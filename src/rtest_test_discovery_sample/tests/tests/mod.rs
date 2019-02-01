@@ -1,3 +1,0 @@
-/*!
- * Defines the tests module.
- */
