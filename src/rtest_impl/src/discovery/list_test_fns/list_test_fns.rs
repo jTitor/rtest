@@ -177,7 +177,7 @@ impl TestFnFinder {
 						//with Meta::Word.name().to_string() == "main".
 						let contains_main = attrib_list.nested.iter()
 						.filter(|x| match x {
-							syn::Meta::Word(nested_word) => nested_word.name().to_string().to_lowercase().as_str() == "main",
+							syn::NestedMeta::Meta(syn::Meta::Word(nested_word)) => nested_word.to_string().to_lowercase().as_str() == "main",
 							_ => false
 						})
 						.collect::<Vec<_>>()
@@ -189,7 +189,7 @@ impl TestFnFinder {
 						//If this is #[test(main)],
 						//add it to the main-thread test list.
 						if contains_main {
-							self.add_test_main_fn(attrib_list.ident.to_string().as_str());
+							self.add_main_test_fn(attrib_list.ident.to_string().as_str());
 						}
 						else {
 							//Otherwise, add this as a standard test.
