@@ -181,7 +181,7 @@ impl TestFnFinder {
 							_ => false
 						})
 						.collect::<Vec<_>>()
-						.count() > 0;
+						.len() > 0;
 						//Note - any other nested
 						//attributes besides "main"
 						//are ignored
