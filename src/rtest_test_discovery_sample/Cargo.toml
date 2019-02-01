@@ -7,7 +7,7 @@ description = "Example Rust project used by rtest_tests to test rtest_impl's mac
 
 [dependencies]
 rtest_user_macros = { path = "../rtest_user_macros", version = "*" }
-rtest_proc_macros = { path = "../rtest_proc_macros", version = "*" }
+rtest_user_proc_macros = { path = "../rtest_user_proc_macros", version = "*" }
 
 
 [[tests]]
