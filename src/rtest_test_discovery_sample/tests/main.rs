@@ -6,6 +6,8 @@ extern crate rtest_user_proc_macros;
 #[macro_use]
 extern crate rtest_user_macros;
 
+//Custom attributes can't be applied to modules,
+//so... use a macro instead I guess?
 #[test_mod]
 mod private_module;
 #[test_mod]
