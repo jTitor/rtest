@@ -20,7 +20,7 @@ pub struct TestLists {
 impl TestLists {
 	//Private methods.
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	fn get_list(&self, list_identifier: TestListIdentifier) -> &Vec<TestEntry> {
 		match list_identifier {
@@ -31,7 +31,7 @@ impl TestLists {
 	}
 
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	fn get_list_mut(&mut self, list_identifier: TestListIdentifier) -> &mut Vec<TestEntry> {
 		match list_identifier {

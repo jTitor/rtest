@@ -14,7 +14,7 @@ pub type StaticTestListInstance = MutexGuard<'static, TestLists>;
 pub type StaticTestListInstanceResult = Result<StaticTestListInstance, Error>;
 
 /**
- * TODO
+ * TODO_DESC
  */
 #[derive(Debug, Fail)]
 pub enum StaticTestListError {
@@ -25,7 +25,7 @@ pub enum StaticTestListError {
 }
 
 /**
- * TODO
+ * TODO_DESC
  */
 pub struct StaticTestList {}
 

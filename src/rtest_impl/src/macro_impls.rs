@@ -10,7 +10,7 @@ use quote::ToTokens;
 use crate::discovery::TestFnFinder;
 
 /**
- * TODO
+ * TODO_DESC
  */
 fn get_fn_name(fn_stream: &TokenStream) -> Result<String, Error> {
 	let cast_item = syn::parse::<syn::ItemFn>(fn_stream.clone());

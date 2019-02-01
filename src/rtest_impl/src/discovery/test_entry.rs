@@ -4,7 +4,7 @@
 use std::fmt;
 
 /**
- * TODO
+ * TODO_DESC
 */
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TestEntry {

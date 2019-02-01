@@ -44,7 +44,7 @@ pub struct TestFnList {
 
 impl TestFnList {
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	pub fn clear(&mut self) {
 		self.parallel_fn_names.clear();
@@ -54,7 +54,7 @@ impl TestFnList {
 }
 
 /**
- * TODO
+ * TODO_DESC
  *
  * Runs attribute calls over
  * a given AST tree, exposing the
@@ -71,21 +71,21 @@ pub struct TestFnFinder {
 impl TestFnFinder {
 	//Private functions.
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	fn push_mod_name(&mut self, name: String) {
 		self.mod_names.push(name);
 	}
 
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	fn pop_mod_name(&mut self) {
 		self.mod_names.pop();
 	}
 
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	fn mod_name(&self) -> String {
 		//TODO: Might need to start with
@@ -100,7 +100,7 @@ impl TestFnFinder {
 	}
 
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	fn add_test_fn(&mut self, fn_name: &str) {
 		let full_fn_name = format!("{}_rtest_test_{}", self.mod_name(), fn_name);
@@ -112,7 +112,7 @@ impl TestFnFinder {
 	}
 
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	fn add_main_test_fn(&mut self, fn_name: &str) {
 		let full_fn_name = format!("{}_rtest_test_{}", self.mod_name(), fn_name);
@@ -124,7 +124,7 @@ impl TestFnFinder {
 	}
 
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	fn add_ignore_fn(&mut self, fn_name: &str) {
 		let full_fn_name = format!("{}_rtest_ignore_{}", self.mod_name(), fn_name);
@@ -135,9 +135,72 @@ impl TestFnFinder {
 		});
 	}
 
+	/**
+	 * TODO_DESC
+	 */
 	fn clear_all(&mut self) {
 		self.mod_names.clear();
 		self.test_fns.clear();
+	}
+
+	/**
+	 * TODO_DESC
+	 */
+	fn add_fn<'a>(&mut self, i: &'a syn::ItemFn) {
+		//Check attribs:
+		for attribute in &i.attrs {
+			match attribute.interpret_meta() {
+				//Is this a non-parenthesized attribute
+				//(#[test], #[ignore])?
+				Some(syn::Meta::Word(attrib_name)) => match attrib_name.to_string().to_lowercase().as_str() {
+					//TODO - make literals constants
+					"test" => {
+						//Does this have #[test]?
+						//If so, generate name for test function.
+						//Add it to the list.
+						self.add_test_fn(i.ident.to_string().as_str());
+					}
+					"ignore" => {
+						//Else, does this have #[ignore]?
+						//If so, generate name for ignore function.
+						//Add it to the list.
+						self.add_ignore_fn(i.ident.to_string().as_str());
+					}
+					_ => {}
+				},
+				//Else, is this #[test(main)]?
+				Some(syn::Meta::List(attrib_list)) => match attrib_list.ident.to_string().to_lowercase().as_str() {
+					"test" => {
+						//We know it's a #[test] attrib,
+						//now see if it contains "main".
+						//"main" will also be a Meta::Word
+						//with Meta::Word.name().to_string() == "main".
+						let contains_main = attrib_list.nested.iter()
+						.filter(|x| match x {
+							syn::Meta::Word(nested_word) => nested_word.name().to_string().to_lowercase().as_str() == "main",
+							_ => false
+						})
+						.collect::<Vec<_>>()
+						.count() > 0;
+						//Note - any other nested
+						//attributes besides "main"
+						//are ignored
+
+						//If this is #[test(main)],
+						//add it to the main-thread test list.
+						if contains_main {
+							self.add_test_main_fn(attrib_list.ident.to_string().as_str());
+						}
+						else {
+							//Otherwise, add this as a standard test.
+							self.add_test_fn(attrib_list.ident.to_string().as_str());
+						}
+					}
+					_ => {}
+				},
+				_ => {}
+			}
+		}
 	}
 
 	/**
@@ -171,7 +234,7 @@ impl TestFnFinder {
 	}
 
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	pub fn find_test_fns(&mut self, file_path: &str) -> Result<TestFnList, Error> {
 		self.clear_all();
@@ -200,30 +263,18 @@ impl<'a> visit::Visit<'a> for TestFnFinder {
 	}
 
 	fn visit_item_fn(&mut self, i: &'a syn::ItemFn) {
-		//Check attribs:
-		for attribute in &i.attrs {
-			if let Some(syn::Meta::Word(attrib_name)) = attribute.interpret_meta() {
-				match attrib_name.to_string().as_str() {
-					"test" => {
-						//Does this have #[test]?
-						//If so, generate name for test function.
-						//Add it to the list.
-						self.add_test_fn(i.ident.to_string().as_str());
-						//TODO: this may be #[test(main)],
-						//which might map to a diffferent
-						//syn::Meta variant. Handle that
-						//case separately.
-						unimplemented!();
-					}
-					"ignore" => {
-						//Else, does this have #[ignore]?
-						//If so, generate name for ignore function.
-						//Add it to the list.
-						self.add_ignore_fn(i.ident.to_string().as_str());
-					}
-					_ => {}
-				}
-			}
+		//Check that this function is testable:
+		//	* Takes 0 parameters
+		//	* Returns nothing
+		//If not, skip it
+		let fn_has_no_params = i.decl.inputs.is_empty();
+		let fn_has_no_output = match i.decl.output {
+			syn::ReturnType::Default => true,
+			_ => false
+		};
+
+		if fn_has_no_params && fn_has_no_output {
+			self.add_fn(i);
 		}
 
 		//Call out to super?

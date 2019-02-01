@@ -6,7 +6,7 @@
 static mut LAST_PANIC_STRING: Option<String> = None;
 
 /**
- * TODO
+ * TODO_DESC
  */
 fn clear_last_panic_string() {
 	unsafe {
@@ -15,7 +15,7 @@ fn clear_last_panic_string() {
 }
 
 /**
- * TODO
+ * TODO_DESC
  */
 fn set_last_panic_string(string: &str) {
 	unsafe {

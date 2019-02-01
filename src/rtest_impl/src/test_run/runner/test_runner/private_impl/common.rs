@@ -15,7 +15,7 @@ use crate::test_run::runner::errors::{GetLockError, TestError};
 use crate::test_run::{FailureDetail, RunResults};
 
 /**
- * TODO
+ * TODO_DESC
  */
 pub fn get_mutex_lock<'a, T>(lock: &'a Mutex<T>) -> Result<MutexGuard<'a, T>, Error> {
 	let lock_result = lock.lock();
@@ -27,7 +27,7 @@ pub fn get_mutex_lock<'a, T>(lock: &'a Mutex<T>) -> Result<MutexGuard<'a, T>, Er
 }
 
 /**
- * TODO
+ * TODO_DESC
  */
 pub fn get_write_lock<'a, T>(lock: &'a RwLock<T>) -> Result<RwLockWriteGuard<'a, T>, Error> {
 	let write_lock_result = lock.write();
@@ -39,7 +39,7 @@ pub fn get_write_lock<'a, T>(lock: &'a RwLock<T>) -> Result<RwLockWriteGuard<'a,
 }
 
 /**
- * TODO
+ * TODO_DESC
  */
 pub fn do_test(test: fn()) -> Result<(), TestError> {
 	let initial_test_result = panic::catch_unwind(test);
@@ -72,7 +72,7 @@ pub fn do_test(test: fn()) -> Result<(), TestError> {
 }
 
 /**
- * TODO
+ * TODO_DESC
  */
 pub fn parallel_job(
 	run_results_lock: &RwLock<&mut RunResults>,

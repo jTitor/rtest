@@ -6,7 +6,7 @@ use std::fmt;
 use crate::test_run::FailureDetail;
 
 /**
- * TODO
+ * TODO_DESC
  */
 #[derive(Debug, Clone)]
 pub struct RunResults {
@@ -17,7 +17,7 @@ pub struct RunResults {
 
 impl RunResults {
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	pub fn new() -> RunResults {
 		RunResults {
@@ -28,7 +28,7 @@ impl RunResults {
 	}
 
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	pub fn failure_details(&self) -> &Vec<FailureDetail> {
 		&self._failures
@@ -39,35 +39,35 @@ impl RunResults {
 	}
 
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	pub fn add_failure(&mut self, failure: FailureDetail) {
 		self._failures.push(failure);
 	}
 
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	pub fn pass_count(&self) -> usize {
 		self._pass_count
 	}
 
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	pub fn add_pass(&mut self) {
 		self._pass_count += 1;
 	}
 
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	pub fn ignore_count(&self) -> usize {
 		self._ignore_count
 	}
 
 	/**
-	 * TODO
+	 * TODO_DESC
 	 */
 	pub fn add_ignore(&mut self) {
 		self._ignore_count += 1;

@@ -17,7 +17,7 @@ pub type StaticFrontendMutInstance = RwLockWriteGuard<'static, Frontend>;
 pub type StaticFrontendMutResult = Result<StaticFrontendMutInstance, Error>;
 
 /**
- * TODO
+ * TODO_DESC
  */
 #[derive(Debug, Fail)]
 pub enum StaticFrontendError {
